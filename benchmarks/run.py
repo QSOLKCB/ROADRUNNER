@@ -43,6 +43,7 @@ def main():
         "source_status": command(["git","status","--porcelain"]), "source_digest":source_digest(),
         "binary_sha256":hashlib.sha256(binary.read_bytes()).hexdigest(), "compiler":command([args.compiler,"--version"]),
         "flags":Path(args.flags[1:]).read_text() if args.flags.startswith("@") else args.flags, "platform":platform.platform(), "uname":list(platform.uname()), "cpu":cpu,
+        "cpuinfo_fallback": Path("/proc/cpuinfo").read_text()[:20000] if platform.system()=="Linux" and Path("/proc/cpuinfo").exists() else None,
         "runner_arch":os.environ.get("RUNNER_ARCH"), "github_sha":os.environ.get("GITHUB_SHA"),
         "clock":"CLOCK_MONOTONIC", "quantiles":"median sorted[n//2]; p95/p99 nearest-rank ceil(p*n)-1",
         "timing_scope":"query includes heuristic generation/certification and path reconstruction; excludes path verifier; first is fresh workspace, not evicted CPU cache",

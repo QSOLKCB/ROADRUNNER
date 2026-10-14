@@ -1,0 +1,25 @@
+diff --git a/src/roadrunner.c b/src/roadrunner.c
+index 3a6c4a0..f71b210 100644
+--- a/src/roadrunner.c
++++ b/src/roadrunner.c
+@@ -84,7 +84,7 @@ static int less(const rr_workspace *w,uint32_t a,uint32_t b) {
+ }
+ static void sift_up(rr_workspace *w,size_t i) {
+     uint32_t node=w->heap[i];
+-    while(i) { size_t p=(i-1)/2; if(!less(w,node,w->heap[p])) break;
++    while(i) { size_t p=(i-1)/4; if(!less(w,node,w->heap[p])) break;
+         w->heap[i]=w->heap[p]; w->position[w->heap[i]]=(uint32_t)i; i=p; }
+     w->heap[i]=node; w->position[node]=(uint32_t)i;
+ }
+@@ -97,8 +97,9 @@ static uint32_t pop(rr_workspace *w) {
+     uint32_t root=w->heap[0],node=w->heap[--w->count]; size_t i=0;
+     w->position[root]=RR_NO_NODE;
+     if(w->count) {
+-        while(i<w->count/2) { size_t c=i*2+1;
+-            if(c+1<w->count && less(w,w->heap[c+1],w->heap[c])) c++;
++        while(w->count>1 && i<=(w->count-2)/4) { size_t c=i*4+1;
++            size_t last=c+4<w->count ? c+4:w->count;
++            for(size_t j=c+1;j<last;j++) if(less(w,w->heap[j],w->heap[c])) c=j;
+             if(!less(w,w->heap[c],node)) break;
+             w->heap[i]=w->heap[c]; w->position[w->heap[i]]=(uint32_t)i; i=c; }
+         w->heap[i]=node; w->position[node]=(uint32_t)i;

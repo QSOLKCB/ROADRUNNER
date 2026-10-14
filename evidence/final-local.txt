@@ -1,0 +1,39 @@
+ROADRUNNER shared-host characterization (microseconds; no speed guarantee)
+source 5c99b59a3c4c630d5771da26d313e3cc0556a3b3
+digest 04e12c64cd61de2766c56a9b3c42200fc9710ec7f48431760789e397dcb96eac
+0 grid         auto     row    median=20.105 p95=44.870 p99=59.999 setup=388.509 expanded=399018
+0 grid         auto     morton median=20.523 p95=41.547 p99=63.582 setup=604.353 expanded=399188
+0 grid         dijkstra row    median=138.882 p95=272.220 p99=299.364 setup=428.412 expanded=410814
+0 grid         astar    row    median=48.152 p95=143.499 p99=193.578 setup=373.261 expanded=100863
+0 weighted     dijkstra row    median=197.952 p95=394.547 p99=509.145 setup=335.924 expanded=408788
+0 weighted     dijkstra morton median=197.716 p95=388.249 p99=413.655 setup=616.951 expanded=408804
+0 weighted     astar    row    median=204.213 p95=409.878 p99=477.321 setup=380.414 expanded=365074
+0 local        auto     row    median=0.141 p95=0.383 p99=20.544 setup=311.439 expanded=11574
+0 local        dijkstra row    median=0.435 p95=1.283 p99=124.125 setup=404.506 expanded=13258
+0 sparse       dijkstra row    median=325.466 p95=599.169 p99=722.154 setup=540.892 expanded=427017
+0 disconnected auto     row    median=20.691 p95=22.543 p99=61.168 setup=338.418 expanded=411648
+0 corridor     auto     row    median=16.229 p95=34.393 p99=43.843 setup=207.469 expanded=407443
+1 corridor     auto     row    median=15.832 p95=34.523 p99=60.304 setup=165.657 expanded=407443
+1 disconnected auto     row    median=21.396 p95=23.412 p99=61.271 setup=340.330 expanded=411648
+1 sparse       dijkstra row    median=353.292 p95=598.783 p99=809.568 setup=492.581 expanded=427017
+1 local        dijkstra row    median=0.461 p95=1.341 p99=127.348 setup=347.875 expanded=13258
+1 local        auto     row    median=0.154 p95=0.360 p99=21.035 setup=379.066 expanded=11574
+1 weighted     astar    row    median=192.661 p95=413.212 p99=451.122 setup=351.067 expanded=365074
+1 weighted     dijkstra morton median=199.135 p95=380.942 p99=402.208 setup=666.060 expanded=408804
+1 weighted     dijkstra row    median=194.169 p95=403.364 p99=552.408 setup=362.607 expanded=408788
+1 grid         astar    row    median=48.642 p95=177.425 p99=291.012 setup=344.848 expanded=100863
+1 grid         dijkstra row    median=131.351 p95=294.050 p99=497.518 setup=326.100 expanded=410814
+1 grid         auto     morton median=20.607 p95=44.033 p99=73.011 setup=643.597 expanded=399188
+1 grid         auto     row    median=21.178 p95=45.876 p99=56.591 setup=365.348 expanded=399018
+2 grid         auto     row    median=21.618 p95=44.874 p99=105.068 setup=398.382 expanded=399018
+2 grid         auto     morton median=20.939 p95=41.469 p99=109.368 setup=589.430 expanded=399188
+2 grid         dijkstra row    median=142.006 p95=276.151 p99=379.333 setup=347.718 expanded=410814
+2 grid         astar    row    median=46.425 p95=148.638 p99=202.647 setup=352.849 expanded=100863
+2 weighted     dijkstra row    median=200.820 p95=469.114 p99=537.636 setup=364.053 expanded=408788
+2 weighted     dijkstra morton median=201.031 p95=402.796 p99=574.956 setup=606.130 expanded=408804
+2 weighted     astar    row    median=202.456 p95=416.545 p99=487.222 setup=570.202 expanded=365074
+2 local        auto     row    median=0.131 p95=0.329 p99=20.661 setup=333.295 expanded=11574
+2 local        dijkstra row    median=0.454 p95=1.447 p99=129.074 setup=399.488 expanded=13258
+2 sparse       dijkstra row    median=329.591 p95=611.347 p99=804.516 setup=420.905 expanded=427017
+2 disconnected auto     row    median=21.375 p95=37.380 p99=122.186 setup=350.163 expanded=411648
+2 corridor     auto     row    median=15.573 p95=33.354 p99=47.585 setup=163.534 expanded=407443

@@ -99,3 +99,7 @@ Optional future stress workload, not a correctness oracle. If used, retain diffe
 - Measurements bind source commit or source-content digest, exact compiler flags, binary identity, graph/query checksums, seed, setup boundaries, machine facts and sample count.
 - Treat preallocated-query allocation counts separately from graph/scratch creation. Retain cold versus warm and preprocessing memory/time honestly.
 - At most three substantial post-baseline experiments. Predeclare goal, risks, budget and accept/reject criterion; a failed or inconclusive hypothesis is a valid recorded outcome.
+
+## Recorded experiments
+
+See [EXPERIMENTS.md](EXPERIMENTS.md) for predeclared hypotheses, paired raw evidence, held-out confirmation, costs and decisions. The priority-queue research lead for cycle2 is Donald B. Johnson, *Priority queues with update and finding minimum spanning trees*, Information Processing Letters 4(3), 1975, pp.53–57, https://doi.org/10.1016/0020-0190(75)90001-0 . Publisher metadata was verified; it supplies historical context, not a measured ROADRUNNER advantage. The tested four-ary implementation did not satisfy the declared speed criterion and was rejected.

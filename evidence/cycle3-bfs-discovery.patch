@@ -1,0 +1,18 @@
+diff --git a/src/roadrunner.c b/src/roadrunner.c
+index 3a6c4a0..03fcf31 100644
+--- a/src/roadrunner.c
++++ b/src/roadrunner.c
+@@ -142,10 +142,12 @@ rr_status rr_search(const rr_graph *g,rr_workspace *w,rr_algorithm algorithm,
+             if(distance>=w->distance[a.to]) continue;
+             w->distance[a.to]=distance; w->parent[a.to]=u;
+             w->key[a.to]=h && h[a.to]>UINT64_MAX-distance ? UINT64_MAX:distance+(h ? h[a.to]:0);
+-            if(bfs) { w->heap[w->count++]=a.to; r->pushes++; }
++            if(bfs) { if(a.to==target) goto route_found;
++                w->heap[w->count++]=a.to; r->pushes++; }
+             else { if(w->position[a.to]==RR_NO_NODE) r->pushes++; push_or_decrease(w,a.to); }
+         }
+     }
++ route_found:
+     if(w->mark[target]!=w->epoch || w->distance[target]==RR_INFINITY) return RR_NO_PATH;
+     r->cost=w->distance[target]; r->path_length=1;
+     for(u=target;u!=source;u=w->parent[u]) {

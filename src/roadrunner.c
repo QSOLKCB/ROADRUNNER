@@ -3,16 +3,21 @@
 #include <stdlib.h>
 #include <string.h>
 
+#ifndef RR_EPOCH_LIMIT
+#define RR_EPOCH_LIMIT UINT32_MAX
+#endif
+_Static_assert(RR_EPOCH_LIMIT > 0 && RR_EPOCH_LIMIT <= UINT32_MAX,
+               "epoch limit must fit a nonzero uint32_t");
 typedef struct { uint32_t to, cost; } arc;
 struct rr_graph {
     uint32_t n; size_t m, bytes; int unit;
     rr_allocator allocator; size_t *offset; arc *arcs;
 };
 struct rr_workspace {
-    uint32_t n; size_t bytes, count;
+    uint32_t n, epoch; size_t bytes, count;
     rr_allocator allocator;
     uint64_t *distance, *key;
-    uint32_t *parent, *heap, *position;
+    uint32_t *parent, *heap, *position, *mark;
 };
 static void *default_allocate(void *c, size_t n) { (void)c; return malloc(n); }
 static void default_release(void *c, void *p) { (void)c; free(p); }
@@ -60,14 +65,19 @@ rr_status rr_workspace_create(uint32_t n,const rr_allocator *allocator,rr_worksp
     if(!out) return RR_INVALID;
     *out=NULL;
     if(!n || n==UINT32_MAX || !allocator_get(allocator,&a)) return RR_INVALID;
-    if(!add_bytes(&bytes,n,2*sizeof(uint64_t)+3*sizeof(uint32_t))) return RR_OVERFLOW;
+    if(!add_bytes(&bytes,n,2*sizeof(uint64_t)+4*sizeof(uint32_t))) return RR_OVERFLOW;
     w=a.allocate(a.context,bytes); if(!w) return RR_NO_MEMORY;
     memset(w,0,sizeof(*w)); w->n=n; w->bytes=bytes; w->allocator=a;
     w->distance=(uint64_t *)(w+1); w->key=w->distance+n;
-    w->parent=(uint32_t *)(w->key+n); w->heap=w->parent+n; w->position=w->heap+n;
+    w->parent=(uint32_t *)(w->key+n); w->heap=w->parent+n; w->position=w->heap+n; w->mark=w->position+n;
+    memset(w->mark,0,(size_t)n*sizeof(*w->mark));
     *out=w; return RR_OK;
 }
 void rr_workspace_destroy(rr_workspace *w) { if(w) w->allocator.release(w->allocator.context,w); }
+static void touch(rr_workspace *w,uint32_t node) {
+    if(w->mark[node]!=w->epoch) { w->mark[node]=w->epoch; w->distance[node]=RR_INFINITY;
+        w->parent[node]=RR_NO_NODE; w->position[node]=RR_NO_NODE; }
+}
 static int less(const rr_workspace *w,uint32_t a,uint32_t b) {
     if(w->key[a]!=w->key[b]) return w->key[a]<w->key[b];
     if(w->distance[a]!=w->distance[b]) return w->distance[a]<w->distance[b];
@@ -107,7 +117,7 @@ static int heuristic_valid(const rr_graph *g,uint32_t target,const uint64_t *h) 
 rr_status rr_search(const rr_graph *g,rr_workspace *w,rr_algorithm algorithm,
                    uint32_t source,uint32_t target,const uint64_t *h,
                    uint32_t *path,size_t capacity,rr_result *r) {
-    uint32_t i,u; size_t head=0; int bfs;
+    uint32_t u; size_t head=0; int bfs;
     if(!r) return RR_INVALID;
     memset(r,0,sizeof(*r)); r->cost=RR_INFINITY;
     if(!g || !w || w->n<g->n || source>=g->n || target>=g->n || (!path && capacity) ||
@@ -117,7 +127,8 @@ rr_status rr_search(const rr_graph *g,rr_workspace *w,rr_algorithm algorithm,
     r->algorithm=algorithm; r->workspace_bytes=w->bytes; bfs=algorithm==RR_BFS;
     r->heuristic_used=algorithm==RR_ASTAR && heuristic_valid(g,target,h);
     if(!r->heuristic_used) h=NULL;
-    for(i=0;i<g->n;i++) { w->distance[i]=RR_INFINITY; w->parent[i]=RR_NO_NODE; w->position[i]=RR_NO_NODE; }
+    if(w->epoch==RR_EPOCH_LIMIT) { memset(w->mark,0,(size_t)w->n*sizeof(*w->mark)); w->epoch=0; }
+    w->epoch++; touch(w,source);
     w->count=0; w->distance[source]=0; w->key[source]=h ? h[source]:0;
     if(bfs) w->heap[w->count++]=source; else push_or_decrease(w,source);
     r->pushes=1;
@@ -128,15 +139,17 @@ rr_status rr_search(const rr_graph *g,rr_workspace *w,rr_algorithm algorithm,
             arc a=g->arcs[e]; uint64_t distance;
             r->relaxed++;
             if(w->distance[u]>UINT64_MAX-a.cost) return RR_OVERFLOW;
-            distance=w->distance[u]+a.cost;
+            distance=w->distance[u]+a.cost; touch(w,a.to);
             if(distance>=w->distance[a.to]) continue;
             w->distance[a.to]=distance; w->parent[a.to]=u;
             w->key[a.to]=h && h[a.to]>UINT64_MAX-distance ? UINT64_MAX:distance+(h ? h[a.to]:0);
-            if(bfs) { w->heap[w->count++]=a.to; r->pushes++; }
+            if(bfs) { if(a.to==target) goto route_found;
+                w->heap[w->count++]=a.to; r->pushes++; }
             else { if(w->position[a.to]==RR_NO_NODE) r->pushes++; push_or_decrease(w,a.to); }
         }
     }
-    if(w->distance[target]==RR_INFINITY) return RR_NO_PATH;
+ route_found:
+    if(w->mark[target]!=w->epoch || w->distance[target]==RR_INFINITY) return RR_NO_PATH;
     r->cost=w->distance[target]; r->path_length=1;
     for(u=target;u!=source;u=w->parent[u]) {
         if(w->parent[u]==RR_NO_NODE || r->path_length>=g->n) return RR_INVALID;

@@ -1,0 +1,110 @@
+[
+  {
+    "id": 115761707912,
+    "name": "macos-15-intel / clang",
+    "lines": [
+      "2026-10-14T08:41:20.9973060Z Image: macos-15",
+      "2026-10-14T08:41:20.9979410Z Image Release: https://github.com/actions/runner-images/releases/tag/macos-15%2F20260824.0482",
+      "2026-10-14T08:41:26.1978060Z   EXPECTED_MACHINE: x86_64",
+      "2026-10-14T08:41:26.1978670Z   EXPECTED_ARCH: X64",
+      "2026-10-14T08:41:29.9529830Z -- The C compiler identification is AppleClang 17.0.0.17000013",
+      "2026-10-14T08:41:42.2862090Z build/rr:       Mach-O 64-bit executable x86_64",
+      "2026-10-14T08:41:42.2863060Z build/rr_tests: Mach-O 64-bit executable x86_64",
+      "2026-10-14T08:41:42.2864540Z build/rr_bench: Mach-O 64-bit executable x86_64",
+      "2026-10-14T08:41:42.4545410Z 1/2 Test #1: conformance ......................   Passed    0.06 sec",
+      "2026-10-14T08:41:42.7597840Z 2/2 Test #2: cli_parser .......................   Passed    0.30 sec",
+      "2026-10-14T08:41:42.7607310Z 100% tests passed out of 2",
+      "2026-10-14T08:41:43.1957780Z source b9ecdef2991a803a3ce34230816f76f866d757b8",
+      "2026-10-14T08:41:43.1958710Z digest ae1a0f3299ca518b9ebc3eaf0b100719824945e0972180a38de507594370d56a"
+    ]
+  },
+  {
+    "id": 115761708030,
+    "name": "ubuntu-24.04 / gcc",
+    "lines": [
+      "2026-10-14T08:41:06.2957770Z Image: ubuntu-24.04",
+      "2026-10-14T08:41:06.2964227Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327",
+      "2026-10-14T08:41:07.5774285Z   EXPECTED_MACHINE: x86_64",
+      "2026-10-14T08:41:07.5774837Z   EXPECTED_ARCH: X64",
+      "2026-10-14T08:41:07.9450808Z -- The C compiler identification is GNU 13.3.0",
+      "2026-10-14T08:41:09.8827238Z build/rr:       ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=0fd8419a7beddbbe0f5e577417b994c31751099e, for GNU/Linux 3.2.0, not stripped",
+      "2026-10-14T08:41:09.8828941Z build/rr_tests: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=2893e2edfdc82a482c83cc9364b9c6ea2ba89423, for GNU/Linux 3.2.0, not stripped",
+      "2026-10-14T08:41:10.5791209Z build/rr_bench: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=28edae337be6d8c723f7d6589e1174ae3fdae1b8, for GNU/Linux 3.2.0, not stripped",
+      "2026-10-14T08:41:10.8237426Z 1/2 Test #1: conformance ......................   Passed    0.06 sec",
+      "2026-10-14T08:41:10.8986440Z 2/2 Test #2: cli_parser .......................   Passed    0.07 sec",
+      "2026-10-14T08:41:10.8988757Z 100% tests passed, 0 tests failed out of 2",
+      "2026-10-14T08:41:11.2358750Z source b9ecdef2991a803a3ce34230816f76f866d757b8",
+      "2026-10-14T08:41:11.2359195Z digest ae1a0f3299ca518b9ebc3eaf0b100719824945e0972180a38de507594370d56a"
+    ]
+  },
+  {
+    "id": 115761708034,
+    "name": "sanitizers",
+    "lines": [
+      "2026-10-14T08:41:05.6921295Z Image: ubuntu-24.04",
+      "2026-10-14T08:41:05.6923409Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327",
+      "2026-10-14T08:41:06.7573440Z \u001b[36;1mASAN_OPTIONS=detect_leaks=1:halt_on_error=1 UBSAN_OPTIONS=halt_on_error=1 ctest --test-dir build-san --output-on-failure\u001b[0m",
+      "2026-10-14T08:41:09.6843246Z -- The C compiler identification is Clang 18.1.3",
+      "2026-10-14T08:41:13.1260593Z 1/2 Test #1: conformance ......................   Passed    0.68 sec",
+      "2026-10-14T08:41:14.5027596Z 2/2 Test #2: cli_parser .......................   Passed    1.37 sec",
+      "2026-10-14T08:41:14.5030317Z 100% tests passed, 0 tests failed out of 2"
+    ]
+  },
+  {
+    "id": 115761708075,
+    "name": "macos-15 / clang",
+    "lines": [
+      "2026-10-14T08:41:20.7178110Z Image: macos-15-arm64",
+      "2026-10-14T08:41:20.7181790Z Image Release: https://github.com/actions/runner-images/releases/tag/macos-15-arm64%2F20260907.0337",
+      "2026-10-14T08:41:23.4573440Z   EXPECTED_MACHINE: arm64",
+      "2026-10-14T08:41:23.4574030Z   EXPECTED_ARCH: ARM64",
+      "2026-10-14T08:41:25.7616130Z -- The C compiler identification is AppleClang 17.0.0.17000013",
+      "2026-10-14T08:41:29.8430660Z build/rr:       Mach-O 64-bit executable arm64",
+      "2026-10-14T08:41:29.8433820Z build/rr_tests: Mach-O 64-bit executable arm64",
+      "2026-10-14T08:41:29.8438900Z build/rr_bench: Mach-O 64-bit executable arm64",
+      "2026-10-14T08:41:29.9790940Z 1/2 Test #1: conformance ......................   Passed    0.06 sec",
+      "2026-10-14T08:41:30.3037390Z 2/2 Test #2: cli_parser .......................   Passed    0.32 sec",
+      "2026-10-14T08:41:30.3045680Z 100% tests passed out of 2",
+      "2026-10-14T08:41:30.7411910Z source b9ecdef2991a803a3ce34230816f76f866d757b8",
+      "2026-10-14T08:41:30.7435870Z digest ae1a0f3299ca518b9ebc3eaf0b100719824945e0972180a38de507594370d56a"
+    ]
+  },
+  {
+    "id": 115761708195,
+    "name": "ubuntu-24.04 / clang",
+    "lines": [
+      "2026-10-14T08:41:06.1400763Z Image: ubuntu-24.04",
+      "2026-10-14T08:41:06.1404543Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261004.327",
+      "2026-10-14T08:41:07.5364923Z   EXPECTED_MACHINE: x86_64",
+      "2026-10-14T08:41:07.5365470Z   EXPECTED_ARCH: X64",
+      "2026-10-14T08:41:10.9781428Z -- The C compiler identification is Clang 18.1.3",
+      "2026-10-14T08:41:13.7845186Z build/rr:       ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=3204d12c5d8f6ac74ce93ed493f8aee38d9b4807, for GNU/Linux 3.2.0, not stripped",
+      "2026-10-14T08:41:13.7847697Z build/rr_tests: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=299b38407d442fc6ae427432b9ccbbc86910c6ed, for GNU/Linux 3.2.0, not stripped",
+      "2026-10-14T08:41:14.2079039Z build/rr_bench: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=928552a48d22539ee4f06ec5e1e463d9a856690a, for GNU/Linux 3.2.0, not stripped",
+      "2026-10-14T08:41:14.4090265Z 1/2 Test #1: conformance ......................   Passed    0.05 sec",
+      "2026-10-14T08:41:14.4919789Z 2/2 Test #2: cli_parser .......................   Passed    0.07 sec",
+      "2026-10-14T08:41:14.4923396Z 100% tests passed, 0 tests failed out of 2",
+      "2026-10-14T08:41:14.7704094Z source b9ecdef2991a803a3ce34230816f76f866d757b8",
+      "2026-10-14T08:41:14.7704518Z digest ae1a0f3299ca518b9ebc3eaf0b100719824945e0972180a38de507594370d56a"
+    ]
+  },
+  {
+    "id": 115761708241,
+    "name": "ubuntu-24.04-arm / gcc",
+    "lines": [
+      "2026-10-14T08:41:08.7149771Z Image: ubuntu-24.04-arm",
+      "2026-10-14T08:41:08.7153786Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24-arm64%2F20261004.142",
+      "2026-10-14T08:41:10.3162733Z   EXPECTED_MACHINE: aarch64",
+      "2026-10-14T08:41:10.3163565Z   EXPECTED_ARCH: ARM64",
+      "2026-10-14T08:41:11.6673639Z -- The C compiler identification is GNU 13.3.0",
+      "2026-10-14T08:41:20.5845524Z build/rr:       ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, BuildID[sha1]=1410ab18a0aea47af8bfd85ee9fcab4df4abac0b, for GNU/Linux 3.7.0, not stripped",
+      "2026-10-14T08:41:20.5847348Z build/rr_tests: ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, BuildID[sha1]=d5d8ef026615259b3ca4a85977023db091f1d703, for GNU/Linux 3.7.0, not stripped",
+      "2026-10-14T08:41:20.5848820Z build/rr_bench: ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, BuildID[sha1]=57ec55d7d5a414ae29feb7518bfc9c47f7baa5d1, for GNU/Linux 3.7.0, not stripped",
+      "2026-10-14T08:41:21.4259072Z 1/2 Test #1: conformance ......................   Passed    0.05 sec",
+      "2026-10-14T08:41:21.4952835Z 2/2 Test #2: cli_parser .......................   Passed    0.06 sec",
+      "2026-10-14T08:41:21.4954661Z 100% tests passed, 0 tests failed out of 2",
+      "2026-10-14T08:41:21.7164470Z source b9ecdef2991a803a3ce34230816f76f866d757b8",
+      "2026-10-14T08:41:21.7165066Z digest ae1a0f3299ca518b9ebc3eaf0b100719824945e0972180a38de507594370d56a"
+    ]
+  }
+]

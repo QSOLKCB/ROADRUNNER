@@ -1,0 +1,11 @@
+Candidate/baseline latency ratios; shared-host descriptive paired evidence
+grid         auto     median_pair_ratio=0.9311 range=[0.9092,0.9447]
+grid         dijkstra median_pair_ratio=1.0842 range=[1.0352,1.1504]
+grid         astar    median_pair_ratio=1.0448 range=[0.9743,1.1067]
+weighted     dijkstra median_pair_ratio=1.0150 range=[0.9984,1.1481]
+weighted     astar    median_pair_ratio=1.0677 range=[1.0476,1.1134]
+local        auto     median_pair_ratio=0.8845 range=[0.7485,1.1121]
+local        dijkstra median_pair_ratio=1.0332 range=[0.9767,1.1297]
+sparse       dijkstra median_pair_ratio=1.0209 range=[0.9345,1.0651]
+disconnected auto     median_pair_ratio=0.9089 range=[0.8981,0.9221]
+corridor     auto     median_pair_ratio=0.9482 range=[0.8505,1.0301]

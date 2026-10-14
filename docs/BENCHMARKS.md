@@ -6,7 +6,7 @@ The C harness uses CLOCK_MONOTONIC around search plus applicable heuristic gener
 
 First-query timing means a fresh workspace/process, not flushed CPU caches or a cold OS page cache. Five queries warm the workspace; timed reported queries follow them. Warm query median/p95/p99, first query, generation, index+workspace construction, setup+first query, and whole subprocess wall time are distinct. Harness path verification is outside kernel timing but included in process wall time. No hidden offline heuristic certification is omitted.
 
-Memory fields are exactly tracked requested bytes for graph/workspace/harness input, verification buffers and samples. Peak/steady refer to those live allocations, not process RSS, allocator metadata, stack or OS resident memory. Core graph/workspace bytes are separately reported. All query allocation counts must remain zero. No process-RSS claim is made.
+Memory fields are exactly tracked requested bytes for graph/workspace/harness input, verification buffers and samples. Peak/steady refer to those live allocations, not process RSS, allocator metadata, stack, OS resident memory, or allocations internal to libc functions such as qsort. Setup allocation counts likewise cover only instrumented calls. Core graph/workspace bytes are separately reported. All query allocation counts must remain zero. No process-RSS claim is made.
 
 ## Matched geometry comparison
 
