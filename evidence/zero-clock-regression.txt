@@ -1,0 +1,9 @@
+Native validation run 38539970107, source be3e57c31789c533165d31bd0d955d2c888103b4:
+macOS ARM64 passed conformance, forced epoch rollover and CLI tests, but benchmark oracle failed decoding JSON.
+https://github.com/QSOLKCB/ROADRUNNER/actions/runs/38539970107/job/115772016448
+
+Executed deterministic reproduction: compiled the actual benchmarks/bench.c with clock_gettime replaced by a constant monotonic clock. grid prints routes_per_second:inf and disconnected prints routes_per_second:-nan before the fix; both are invalid JSON. Independent audit reproduced the same boundary. The hosted log did not preserve the failing JSON, so exact failing parameters there are unknown.
+
+Fix: retain zero duration samples, report unmeasurable throughput as JSON null, and mark paired comparisons with either zero median inconclusive. Never substitute epsilon timing or omit failed pairs. No routing-core changes.
+
+Regression: full 108-case independent Bellman-Ford benchmark replay against both real-clock and frozen-clock binaries, plus mixed/zero-median comparison checks and an end-to-end 30-pair frozen-clock comparison. Included in Make, CMake and native CI.

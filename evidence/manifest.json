@@ -1,0 +1,35 @@
+{
+  "format": "gzip JSON; python3 -m gzip -d FILE or gzip -dc FILE",
+  "entries": [
+    {
+      "file": "cycle1-heldout.json.gz",
+      "uncompressed_sha256": "69c7e92cd8a43c9fe11838ee503cde964a907fe5082345ddac0372f9465b1dd7",
+      "gzip_sha256": "ce9876182b9fe1e0acb584f26b322112601dfefdec87c5dff981835c561f2f90",
+      "uncompressed_bytes": 214649
+    },
+    {
+      "file": "cycle1-generation.json.gz",
+      "uncompressed_sha256": "b89b1840bb6a084af4f7682053b9629ff25442a8bbd83982d83a6434cba1cc01",
+      "gzip_sha256": "79780c7fa6acff4f1a044718d3edc016809e86c25bcdff869c58866d941fbb13",
+      "uncompressed_bytes": 535928
+    },
+    {
+      "file": "cycle2-fourary.json.gz",
+      "uncompressed_sha256": "a2af6fe737a9cabe28cd71d92afea506c20a9a3e7edb91d06eba25ed155e88ae",
+      "gzip_sha256": "697cf36d23cc29502eb6c94c99e4746081b89e57a9df7678eb6a88d2a6ed66fc",
+      "uncompressed_bytes": 535760
+    },
+    {
+      "file": "cycle3-heldout.json.gz",
+      "uncompressed_sha256": "674733b6fc152356ea279e6ab87b3d18dd787038dc57ed8329e70d62d5191f55",
+      "gzip_sha256": "48b232b3d95c69871ca257cf7e21f4a0c0e8da1df1917482aadeabb9ac6554ba",
+      "uncompressed_bytes": 213868
+    },
+    {
+      "file": "cycle3-bfs-discovery.json.gz",
+      "uncompressed_sha256": "b9c1807c511d4095b8d9e63f9ba8ce737487709604845205400b71f1b2dbb0dc",
+      "gzip_sha256": "f5efec3b55cdedec1ebab2ae1de34961e9d45bfb3dfee188da692fbc4a50c8ea",
+      "uncompressed_bytes": 535208
+    }
+  ]
+}

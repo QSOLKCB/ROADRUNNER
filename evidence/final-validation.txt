@@ -1,0 +1,24 @@
+cc -Iinclude -O3 -DNDEBUG -std=c17 -Wall -Wextra -Wpedantic -Werror src/cli.c src/roadrunner.c  -o build/rr
+cc -Iinclude -O3 -DNDEBUG -std=c17 -Wall -Wextra -Wpedantic -Werror tests/test_roadrunner.c src/roadrunner.c  -o build/rr_tests
+cc -Iinclude -O3 -DNDEBUG -std=c17 -Wall -Wextra -Wpedantic -Werror -DRR_EPOCH_LIMIT=3 tests/test_roadrunner.c src/roadrunner.c  -o build/rr_tests_wrap
+cc -Iinclude -O3 -DNDEBUG -std=c17 -Wall -Wextra -Wpedantic -Werror benchmarks/bench.c src/roadrunner.c  -o build/rr_bench
+build/rr_tests
+ROADRUNNER conformance: 400 fixed-seed random graphs, targeted cases, 262228 queries, 6224084 checks passed
+build/rr_tests_wrap
+ROADRUNNER conformance: 400 fixed-seed random graphs, targeted cases, 262228 queries, 6224084 checks passed
+python3 tests/test_benchmark_oracle.py build/rr_bench
+{"binary_sha256": "7dd1db9a6fdb79ee68c237d1dd7f7f5346e7d4a45456ecf7117821e403761399", "cases": 108, "oracle": "independent Python Bellman-Ford on original generated edge tuples", "rows_sha256": "16892c47d7ff3e8e355aee902b0832aa34adb2eb4719a961a5ad810a3c71f379", "status": "PASS"}
+python3 tests/test_cli.py build/rr
+CLI parser/replay checks passed
+cc -Iinclude -O1 -g -std=c17 -Wall -Wextra -Wpedantic -Werror -fsanitize=address,undefined -fno-omit-frame-pointer src/cli.c src/roadrunner.c -fsanitize=address,undefined -o build-san/rr
+cc -Iinclude -O1 -g -std=c17 -Wall -Wextra -Wpedantic -Werror -fsanitize=address,undefined -fno-omit-frame-pointer tests/test_roadrunner.c src/roadrunner.c -fsanitize=address,undefined -o build-san/rr_tests
+cc -Iinclude -O1 -g -std=c17 -Wall -Wextra -Wpedantic -Werror -fsanitize=address,undefined -fno-omit-frame-pointer -DRR_EPOCH_LIMIT=3 tests/test_roadrunner.c src/roadrunner.c -fsanitize=address,undefined -o build-san/rr_tests_wrap
+cc -Iinclude -O1 -g -std=c17 -Wall -Wextra -Wpedantic -Werror -fsanitize=address,undefined -fno-omit-frame-pointer benchmarks/bench.c src/roadrunner.c -fsanitize=address,undefined -o build-san/rr_bench
+build-san/rr_tests
+ROADRUNNER conformance: 400 fixed-seed random graphs, targeted cases, 262228 queries, 6224084 checks passed
+build-san/rr_tests_wrap
+ROADRUNNER conformance: 400 fixed-seed random graphs, targeted cases, 262228 queries, 6224084 checks passed
+python3 tests/test_benchmark_oracle.py build-san/rr_bench
+{"binary_sha256": "056829b931e4a0f4705782eb89edfb9aeb1a06ad2edb4169fad24df6cf2a9e53", "cases": 108, "oracle": "independent Python Bellman-Ford on original generated edge tuples", "rows_sha256": "16892c47d7ff3e8e355aee902b0832aa34adb2eb4719a961a5ad810a3c71f379", "status": "PASS"}
+python3 tests/test_cli.py build-san/rr
+CLI parser/replay checks passed
