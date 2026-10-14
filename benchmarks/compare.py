@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 import platform
 import statistics
@@ -12,6 +13,21 @@ import datetime
 
 def digest(path):
     return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+def latency_ratio(baseline,candidate):
+    if not all(math.isfinite(x) and x>=0 for x in (baseline,candidate)):
+        raise ValueError("latencies must be finite and nonnegative")
+    if baseline==0 or candidate==0:
+        return None
+    ratio=candidate/baseline
+    if not math.isfinite(ratio):
+        raise ValueError("latency ratio is not finite")
+    return ratio
+def ratio_summary(ratios):
+    complete=all(r is not None for r in ratios)
+    return {"median_pair_ratio":statistics.median(ratios) if complete else None,
+        "min_ratio":min(ratios) if complete else None,"max_ratio":max(ratios) if complete else None,
+        "all_ratios":ratios,"unmeasurable_pairs":sum(r is None for r in ratios),
+        "status":"measured" if complete else "inconclusive_clock_resolution"}
 def main():
     parser=argparse.ArgumentParser()
     parser.add_argument("--baseline",required=True)
@@ -40,7 +56,8 @@ def main():
         "baseline_commit":args.baseline_commit,"candidate_commit":args.candidate_commit,
         "baseline_binary_sha256":digest(args.baseline),"candidate_binary_sha256":digest(args.candidate),
         "baseline_core_sha256":digest(args.baseline_core),"candidate_core_sha256":digest(args.candidate_core),
-        "method":"AB/BA alternate by pair, same logical graph/query/strategy; ratios candidate/baseline; shared host, descriptive only"}
+        "method":"AB/BA alternate by pair, same logical graph/query/strategy; ratios candidate/baseline; shared host, descriptive only",
+        "zero_median_policy":"If either median is zero, pair ratio is null and the entire case summary is inconclusive; no epsilon or selective omission."}
     pairs=[]; summary=[]
     for family,strategy,layout in cases:
         ratios=[]
@@ -55,11 +72,15 @@ def main():
                 if args.allow_bfs_work_change and strategy=="auto" and field in ("expanded","relaxed","pushes"): continue
                 if a[field]!=b[field]: raise ValueError(f"behavior mismatch {field}: {family} {strategy}")
             if a["query_allocations"] or b["query_allocations"]: raise ValueError("query allocation")
-            ratio=b["median_us"]/a["median_us"]; ratios.append(ratio)
+            ratio=latency_ratio(a["median_us"],b["median_us"]); ratios.append(ratio)
             pairs.append({"family":family,"strategy":strategy,"layout":layout,"pair":pair,"median_ratio":ratio,**values})
-        summary.append({"family":family,"strategy":strategy,"layout":layout,"median_pair_ratio":statistics.median(ratios),"min_ratio":min(ratios),"max_ratio":max(ratios),"all_ratios":ratios})
+        summary.append({"family":family,"strategy":strategy,"layout":layout,**ratio_summary(ratios)})
     output=Path(args.output); output.parent.mkdir(parents=True,exist_ok=True)
-    output.write_text(json.dumps({"metadata":metadata,"pairs":pairs,"summary":summary},indent=2)+"\n")
-    human="Candidate/baseline latency ratios; shared-host descriptive paired evidence\n"+"\n".join(f"{s['family']:12s} {s['strategy']:8s} median_pair_ratio={s['median_pair_ratio']:.4f} range=[{s['min_ratio']:.4f},{s['max_ratio']:.4f}]" for s in summary)+"\n"
+    output.write_text(json.dumps({"metadata":metadata,"pairs":pairs,"summary":summary},indent=2,allow_nan=False)+"\n")
+    def describe(s):
+        prefix=f"{s['family']:12s} {s['strategy']:8s} "
+        if s['status']!='measured':return prefix+f"inconclusive: {s['unmeasurable_pairs']} pair(s) below clock resolution"
+        return prefix+f"median_pair_ratio={s['median_pair_ratio']:.4f} range=[{s['min_ratio']:.4f},{s['max_ratio']:.4f}]"
+    human="Candidate/baseline latency ratios; shared-host descriptive paired evidence\n"+"\n".join(describe(s) for s in summary)+"\n"
     output.with_suffix(".txt").write_text(human); print(human)
 if __name__=="__main__": main()

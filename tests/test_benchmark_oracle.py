@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: Apache-2.0
 """Independent original-edge Bellman-Ford benchmark replay; no runtime oracle reuse."""
 import subprocess,sys,json,math,hashlib,pathlib
-binary=pathlib.Path(sys.argv[1]);MASK=(1<<64)-1; INIT=1469598103934665603
+binary=pathlib.Path(sys.argv[1]);zero_clock=len(sys.argv)>2 and sys.argv[2]=='--zero-clock';MASK=(1<<64)-1; INIT=1469598103934665603
 class RNG:
  def __init__(self,s):self.x=s
  def next(self):
@@ -50,5 +50,11 @@ for seed in [123456789,17,0xffffffff]:
     vals=sorted(x['samples_us']);assert abs(x['median_us']-vals[10])<=1e-6
     assert abs(x['p95_us']-vals[19])<=1e-6 and abs(x['p99_us']-vals[20])<=1e-6
     assert all(math.isfinite(v) and v>=0 for v in x['samples_us'])
+    for k in ['median_us','p95_us','p99_us','first_query_us','first_result_end_to_end_us','generate_us','index_workspace_us','setup_us']:
+     assert math.isfinite(x[k]) and x[k]>=0,(family,strategy,layout,seed,k,x[k])
+     if zero_clock:assert x[k]==0,(k,x[k])
+    rate=x['routes_per_second']
+    assert rate is None or (math.isfinite(rate) and rate>=0),rate
+    if zero_clock:assert rate is None and all(v==0 for v in x['samples_us'])
     rows.append({'family':family,'strategy':strategy,'layout':layout,'seed':seed,**expected})
 print(json.dumps({'status':'PASS','cases':len(rows),'oracle':'independent Python Bellman-Ford on original generated edge tuples','rows_sha256':hashlib.sha256(json.dumps(rows,sort_keys=True).encode()).hexdigest(),'binary_sha256':hashlib.sha256(binary.read_bytes()).hexdigest()},sort_keys=True))

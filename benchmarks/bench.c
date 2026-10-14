@@ -134,7 +134,11 @@ int main(int argc,char **argv) {
     memcpy(sorted,samples,(size_t)queries*sizeof(*samples)); qsort(sorted,queries,sizeof(*sorted),double_compare);
     printf("{\"schema\":1,\"family\":\"%s\",\"strategy\":\"%s\",\"layout\":\"%s\",\"side\":%u,\"nodes\":%u,\"edges\":%zu,\"queries\":%u,\"seed\":%u,",family,strategy,layout,side,n,m,queries,seed);
     printf("\"graph_hash\":\"%016" PRIx64 "\",\"query_hash\":\"%016" PRIx64 "\",\"cost_checksum\":\"%016" PRIx64 "\",",graph_hash,query_hash,checksum);
-    printf("\"median_us\":%.6f,\"p95_us\":%.6f,\"p99_us\":%.6f,\"first_query_us\":%.6f,\"first_result_end_to_end_us\":%.6f,\"routes_per_second\":%.3f,",sorted[queries/2],sorted[percentile(queries,95)],sorted[percentile(queries,99)],first_seconds*1e6,(setup_seconds+first_seconds)*1e6,found/sum);
+    printf("\"median_us\":%.6f,\"p95_us\":%.6f,\"p99_us\":%.6f,\"first_query_us\":%.6f,\"first_result_end_to_end_us\":%.6f,",sorted[queries/2],sorted[percentile(queries,95)],sorted[percentile(queries,99)],first_seconds*1e6,(setup_seconds+first_seconds)*1e6);
+    /* A monotonic clock can return equal ticks for every tiny query. Do not
+       invent elapsed time or emit non-JSON inf/nan for an unmeasurable rate. */
+    if(sum>0) printf("\"routes_per_second\":%.3f,",found/sum);
+    else printf("\"routes_per_second\":null,");
     printf("\"generate_us\":%.6f,\"index_workspace_us\":%.6f,\"setup_us\":%.6f,\"expanded\":%" PRIu64 ",\"relaxed\":%" PRIu64 ",\"pushes\":%" PRIu64 ",\"first_expanded\":%" PRIu64 ",",(generate_done-begin)*1e6,(build_done-generate_done)*1e6,setup_seconds*1e6,expanded,relaxed,pushes,first_expanded);
     printf("\"successful_routes\":%u,\"heuristic_used\":%d,\"setup_allocations\":%zu,\"query_allocations\":%zu,\"peak_requested_bytes\":%zu,\"steady_requested_bytes\":%zu,\"graph_bytes\":%zu,\"workspace_bytes\":%zu,\"samples_us\":[",found,heuristic_used,before_queries,memory.allocations-before_queries,memory.peak,memory.live,rr_graph_bytes(g),result.workspace_bytes);
     for(uint32_t q=0;q<queries;q++) printf("%s%.6f",q ? ",":"",samples[q]);
