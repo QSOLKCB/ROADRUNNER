@@ -1,0 +1,252 @@
+[
+  {
+    "artifact_id": 11882755629,
+    "name": "native-ubuntu-24.04-arm-gcc-a9d780e4a4d314a62700a7a45aca87eb9f69276c",
+    "run_id": 38540648384,
+    "source_commit": "a9d780e4a4d314a62700a7a45aca87eb9f69276c",
+    "source_digest": "be06a79552870eadcbe1d8aa516664b1e9748056f50fea93e84cfa6530459f95",
+    "zip_sha256": "a1d128a534ecccd204d9023a0287a55ef4d3b429a24c3274e1f4f514f3a45ef0",
+    "zip_bytes": 11691,
+    "zip_integrity_verified": true,
+    "files": [
+      {
+        "path": "benchmark.json",
+        "bytes": 41339,
+        "sha256": "e265e1ee4abd480d0db19354b6f8a772fab53432f6391b54f5466b7d15b9d77a"
+      },
+      {
+        "path": "benchmark.txt",
+        "bytes": 1366,
+        "sha256": "40470527d788a85303c47b5f4cd3c50a2fb1488f1ee09e7523f0a82d32eb3160"
+      },
+      {
+        "path": "binaries.txt",
+        "bytes": 684,
+        "sha256": "660221ba115ecc76f402f7b9cf353895bc78e84018f7f33fd14062e853504466"
+      },
+      {
+        "path": "compile_commands.json",
+        "bytes": 3199,
+        "sha256": "72c1cdc9640deb33c89c61c957fe964acb8ceff56b9b32bb61fbff50349c858f"
+      },
+      {
+        "path": "environment.txt",
+        "bytes": 3281,
+        "sha256": "25aa0a703a2189635214b14bc09736b09c400777f8fe88cd030d78f1f59fdeed"
+      }
+    ],
+    "architecture": "aarch64",
+    "compiler": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+    "platform": "Linux-6.17.0-1022-azure-aarch64-with-glibc2.39",
+    "cpu": "Architecture:                            aarch64\nCPU op-mode(s):                          32-bit, 64-bit\nByte Order:                              Little Endian\nCPU(s):                                  4\nOn-line CPU(s) list:                     0-3\nVendor ID:                               ARM\nModel name:                              Neoverse-N2\nModel:                                   0\nThread(s) per core:                      1\nCore(s) per socket:                      4\nSocket(s):                               1\nStepping:                                r0p0\nBogoMIPS:                                2000.00\nFlags:                                   fp asimd evtstrm aes pmull sha1 sha2 crc32 atomics fphp asimdhp cpuid asimdrdm jscvt fcma lrcpc dcpop sha3 sm3 sm4 asimddp sha512 sve asimdfhm uscat ilrcpc flagm sb paca pacg dcpodp sve2 sveaes svebitperm svesha3 svesm4 flagm2 frint svei8mm svebf16 i8mm bf16\nL1d cache:                               256 KiB (4 instances)\nL1i cache:                               256 KiB (4 instances)\nL2 cache:                                4 MiB (4 instances)\nL3 cache:                                128 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-3\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Not affected\nVulnerability Spec store bypass:         Mitigation; Speculative Store Bypass disabled via prctl\nVulnerability Spectre v1:                Mitigation; __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; CSV2, BHB\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Not affected\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected",
+    "binary_format": "build/rr:       ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, BuildID[sha1]=3851640a8c63c1555c9e1bbe5fe61b5b0df5a52d, for GNU/Linux 3.7.0, not stripped\nbuild/rr_tests: ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, BuildID[sha1]=d169bcf8c667e1ad1be26e6403aa656e01b2dc79, for GNU/Linux 3.7.0, not stripped\nbuild/rr_bench: ELF 64-bit LSB pie executable, ARM aarch64, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux-aarch64.so.1, BuildID[sha1]=4d09fc7ffc0a93cbd6fc6eddc4345db090da0bb6, for GNU/Linux 3.7.0, not stripped\n",
+    "benchmark_rows": 12,
+    "timing_scope": "query includes heuristic generation/certification and path reconstruction; excludes path verifier; first is fresh workspace, not evicted CPU cache",
+    "memory_scope": "tracked requested bytes including graph, workspace and harness inputs/verification/samples; excludes allocator metadata and OS RSS",
+    "compile_flags_verified": true,
+    "quantile_recomputation_verified": true,
+    "cross_architecture_logical_results_match": true,
+    "artifact_url": "https://github.com/QSOLKCB/ROADRUNNER/actions/runs/38540648384/artifacts/11882755629",
+    "original_expiry": "2026-10-28T09:12:46Z"
+  },
+  {
+    "artifact_id": 11882635854,
+    "name": "native-macos-15-clang-a9d780e4a4d314a62700a7a45aca87eb9f69276c",
+    "run_id": 38540648384,
+    "source_commit": "a9d780e4a4d314a62700a7a45aca87eb9f69276c",
+    "source_digest": "be06a79552870eadcbe1d8aa516664b1e9748056f50fea93e84cfa6530459f95",
+    "zip_sha256": "ec331aeaabb10e0e21a01d0d3f6da507e77694707f47c8a6d308eb2171b97bbb",
+    "zip_bytes": 7238,
+    "zip_integrity_verified": true,
+    "files": [
+      {
+        "path": "benchmark.json",
+        "bytes": 35069,
+        "sha256": "f9cff6e7f063b83bbb2112d3c8762de7f59263d167505551c98ffd949eddf439"
+      },
+      {
+        "path": "benchmark.txt",
+        "bytes": 1366,
+        "sha256": "e9cf5e21893e47e95898111e220b30bae9b8a28b5d5d75db076a8c1c98a246ed"
+      },
+      {
+        "path": "binaries.txt",
+        "bytes": 141,
+        "sha256": "23cd9ad4b0fdaae5633b909991c04c265d039ad3c2831da0b125640d4280c34e"
+      },
+      {
+        "path": "compile_commands.json",
+        "bytes": 3325,
+        "sha256": "e1c10037bfc3c4b7e6c20562e0fed6848de3e6a580b0af2cf72f3ccfb5bf29fc"
+      },
+      {
+        "path": "environment.txt",
+        "bytes": 657,
+        "sha256": "581d06c7ce142782ba683d61c659598b15241ca604093625dfa42c3402c4efdf"
+      }
+    ],
+    "architecture": "arm64",
+    "compiler": "Apple clang version 17.0.0 (clang-1700.0.13.5)\nTarget: arm64-apple-darwin24.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+    "platform": "macOS-15.7.9-arm64-arm-64bit-Mach-O",
+    "cpu": "Apple M1 (Virtual)",
+    "binary_format": "build/rr:       Mach-O 64-bit executable arm64\nbuild/rr_tests: Mach-O 64-bit executable arm64\nbuild/rr_bench: Mach-O 64-bit executable arm64\n",
+    "benchmark_rows": 12,
+    "timing_scope": "query includes heuristic generation/certification and path reconstruction; excludes path verifier; first is fresh workspace, not evicted CPU cache",
+    "memory_scope": "tracked requested bytes including graph, workspace and harness inputs/verification/samples; excludes allocator metadata and OS RSS",
+    "compile_flags_verified": true,
+    "quantile_recomputation_verified": true,
+    "cross_architecture_logical_results_match": true,
+    "artifact_url": "https://github.com/QSOLKCB/ROADRUNNER/actions/runs/38540648384/artifacts/11882635854",
+    "original_expiry": "2026-10-28T09:13:04Z"
+  },
+  {
+    "artifact_id": 11881982470,
+    "name": "native-ubuntu-24.04-clang-a9d780e4a4d314a62700a7a45aca87eb9f69276c",
+    "run_id": 38540648384,
+    "source_commit": "a9d780e4a4d314a62700a7a45aca87eb9f69276c",
+    "source_digest": "be06a79552870eadcbe1d8aa516664b1e9748056f50fea93e84cfa6530459f95",
+    "zip_sha256": "af3b66e0467e888400a82e6c4b8474002be867492cb5efa2364d48de7790bba7",
+    "zip_bytes": 12868,
+    "zip_integrity_verified": true,
+    "files": [
+      {
+        "path": "benchmark.json",
+        "bytes": 45941,
+        "sha256": "96ce64874bfb37a469d82c98d3231b8d0ba896f6efacfc2e8496548eeffe10b2"
+      },
+      {
+        "path": "benchmark.txt",
+        "bytes": 1368,
+        "sha256": "ed794bb78c53b25f01f05ef390db2116fc41433879081829ce1f8d0ae9278d4c"
+      },
+      {
+        "path": "binaries.txt",
+        "bytes": 672,
+        "sha256": "839f78db30fdeea10317d4969cdc1edf023f3e1bda95c389a85c09d8abfb3ffc"
+      },
+      {
+        "path": "compile_commands.json",
+        "bytes": 3213,
+        "sha256": "bb406b9919495778a25601ee2e12f3dc499beafd1cbbe2dcc55ed2a328f32033"
+      },
+      {
+        "path": "environment.txt",
+        "bytes": 3974,
+        "sha256": "8c5ca24c4f17285a6bf037b47e993da0963e32f1834acb62a305ca43f982617a"
+      }
+    ],
+    "architecture": "x86_64",
+    "compiler": "Ubuntu clang version 18.1.3 (1ubuntu1)\nTarget: x86_64-pc-linux-gnu\nThread model: posix\nInstalledDir: /usr/bin",
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  4\nOn-line CPU(s) list:                     0-3\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 7763 64-Core Processor\nCPU family:                              25\nModel:                                   1\nThread(s) per core:                      2\nCore(s) per socket:                      2\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                4890.86\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl tsc_reliable nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves user_shstk clzero xsaveerptr rdpru arat npt nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold v_vmsave_vmload umip vaes vpclmulqdq rdpid fsrm\nVirtualization:                          AMD-V\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               64 KiB (2 instances)\nL1i cache:                               64 KiB (2 instances)\nL2 cache:                                1 MiB (2 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-3\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable: Safe RET, no microcode\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Retpolines; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable: No microcode\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected",
+    "binary_format": "build/rr:       ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=ec4e213ee4dab4b9ebb92da69e501bd6a91ea327, for GNU/Linux 3.2.0, not stripped\nbuild/rr_tests: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=a8fdfc51cbb00afb040459b8de45a4534caaeff4, for GNU/Linux 3.2.0, not stripped\nbuild/rr_bench: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=f9cd01635f8fa1378229edb9ea8d5655f51bb84b, for GNU/Linux 3.2.0, not stripped\n",
+    "benchmark_rows": 12,
+    "timing_scope": "query includes heuristic generation/certification and path reconstruction; excludes path verifier; first is fresh workspace, not evicted CPU cache",
+    "memory_scope": "tracked requested bytes including graph, workspace and harness inputs/verification/samples; excludes allocator metadata and OS RSS",
+    "compile_flags_verified": true,
+    "quantile_recomputation_verified": true,
+    "cross_architecture_logical_results_match": true,
+    "artifact_url": "https://github.com/QSOLKCB/ROADRUNNER/actions/runs/38540648384/artifacts/11881982470",
+    "original_expiry": "2026-10-28T09:12:41Z"
+  },
+  {
+    "artifact_id": 11881728317,
+    "name": "native-macos-15-intel-clang-a9d780e4a4d314a62700a7a45aca87eb9f69276c",
+    "run_id": 38540648384,
+    "source_commit": "a9d780e4a4d314a62700a7a45aca87eb9f69276c",
+    "source_digest": "be06a79552870eadcbe1d8aa516664b1e9748056f50fea93e84cfa6530459f95",
+    "zip_sha256": "c6604d7dbaf5f2f83ed3e912cb5d80b51c35ae2c93c8354ff88c04f02cfad023",
+    "zip_bytes": 7596,
+    "zip_integrity_verified": true,
+    "files": [
+      {
+        "path": "benchmark.json",
+        "bytes": 35215,
+        "sha256": "9b1a8167a8830f37690f2a62c1d9749842b44b126e5496e7d55be9e59c6e2180"
+      },
+      {
+        "path": "benchmark.txt",
+        "bytes": 1382,
+        "sha256": "05ed38289d9d81a51a19f3b6d9bf3b444a4afdbec75e150811559c438aad1529"
+      },
+      {
+        "path": "binaries.txt",
+        "bytes": 144,
+        "sha256": "a0ecaf794f495f165e29bb8e12a4c9e6fb29fb7ada1a742b3e5ebd3560dcf98a"
+      },
+      {
+        "path": "compile_commands.json",
+        "bytes": 3241,
+        "sha256": "93609ec56dc0fcc283342359f4143fcbb4692b147b85a471bc8c398f3f9e6137"
+      },
+      {
+        "path": "environment.txt",
+        "bytes": 672,
+        "sha256": "898eaa5cc8ad79b0ae51e9d5e9285abfea9c70fa1b137d31e09c4292d979303a"
+      }
+    ],
+    "architecture": "x86_64",
+    "compiler": "Apple clang version 17.0.0 (clang-1700.0.13.5)\nTarget: x86_64-apple-darwin24.6.0\nThread model: posix\nInstalledDir: /Applications/Xcode_16.4.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin",
+    "platform": "macOS-15.7.9-x86_64-i386-64bit-Mach-O",
+    "cpu": "Intel(R) Core(TM) i7-8700B CPU @ 3.20GHz",
+    "binary_format": "build/rr:       Mach-O 64-bit executable x86_64\nbuild/rr_tests: Mach-O 64-bit executable x86_64\nbuild/rr_bench: Mach-O 64-bit executable x86_64\n",
+    "benchmark_rows": 12,
+    "timing_scope": "query includes heuristic generation/certification and path reconstruction; excludes path verifier; first is fresh workspace, not evicted CPU cache",
+    "memory_scope": "tracked requested bytes including graph, workspace and harness inputs/verification/samples; excludes allocator metadata and OS RSS",
+    "compile_flags_verified": true,
+    "quantile_recomputation_verified": true,
+    "cross_architecture_logical_results_match": true,
+    "artifact_url": "https://github.com/QSOLKCB/ROADRUNNER/actions/runs/38540648384/artifacts/11881728317",
+    "original_expiry": "2026-10-28T09:13:30Z"
+  },
+  {
+    "artifact_id": 11881494922,
+    "name": "native-ubuntu-24.04-gcc-a9d780e4a4d314a62700a7a45aca87eb9f69276c",
+    "run_id": 38540648384,
+    "source_commit": "a9d780e4a4d314a62700a7a45aca87eb9f69276c",
+    "source_digest": "be06a79552870eadcbe1d8aa516664b1e9748056f50fea93e84cfa6530459f95",
+    "zip_sha256": "19d86e8dd61a1988cb88ddee872355263e732e04d059db4fc000d262f0542297",
+    "zip_bytes": 13178,
+    "zip_integrity_verified": true,
+    "files": [
+      {
+        "path": "benchmark.json",
+        "bytes": 46089,
+        "sha256": "aa911d23d6c7eca47c5de35b67121a719c26ce8c2d3e31e78c65500beb457ccf"
+      },
+      {
+        "path": "benchmark.txt",
+        "bytes": 1368,
+        "sha256": "f8c4dac823c21e6857798a61f1a812987fbc4b688e01c64c992a9bb22e4c82b7"
+      },
+      {
+        "path": "binaries.txt",
+        "bytes": 672,
+        "sha256": "995b209cb43624207edf26cd2c3bf4b2babf587a1d12e4da988ab89702fe72ee"
+      },
+      {
+        "path": "compile_commands.json",
+        "bytes": 3199,
+        "sha256": "72c1cdc9640deb33c89c61c957fe964acb8ceff56b9b32bb61fbff50349c858f"
+      },
+      {
+        "path": "environment.txt",
+        "bytes": 4110,
+        "sha256": "5f04b7e77da09aa064aca0dbc000f9008e88f38abc336f3e5ef8826c7a511f74"
+      }
+    ],
+    "architecture": "x86_64",
+    "compiler": "gcc (Ubuntu 13.3.0-6ubuntu2~24.04.1) 13.3.0\nCopyright (C) 2023 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+    "cpu": "Architecture:                            x86_64\nCPU op-mode(s):                          32-bit, 64-bit\nAddress sizes:                           48 bits physical, 48 bits virtual\nByte Order:                              Little Endian\nCPU(s):                                  4\nOn-line CPU(s) list:                     0-3\nVendor ID:                               AuthenticAMD\nModel name:                              AMD EPYC 7763 64-Core Processor\nCPU family:                              25\nModel:                                   1\nThread(s) per core:                      2\nCore(s) per socket:                      2\nSocket(s):                               1\nStepping:                                1\nBogoMIPS:                                4890.85\nFlags:                                   fpu vme de pse tsc msr pae mce cx8 apic sep mtrr pge mca cmov pat pse36 clflush mmx fxsr sse sse2 ht syscall nx mmxext fxsr_opt pdpe1gb rdtscp lm constant_tsc rep_good nopl tsc_reliable nonstop_tsc cpuid extd_apicid aperfmperf tsc_known_freq pni pclmulqdq ssse3 fma cx16 pcid sse4_1 sse4_2 movbe popcnt aes xsave avx f16c rdrand hypervisor lahf_lm cmp_legacy svm cr8_legacy abm sse4a misalignsse 3dnowprefetch osvw topoext vmmcall fsgsbase bmi1 avx2 smep bmi2 erms invpcid rdseed adx smap clflushopt clwb sha_ni xsaveopt xsavec xgetbv1 xsaves user_shstk clzero xsaveerptr rdpru arat npt nrip_save tsc_scale vmcb_clean flushbyasid decodeassists pausefilter pfthreshold v_vmsave_vmload umip vaes vpclmulqdq rdpid fsrm\nVirtualization:                          AMD-V\nHypervisor vendor:                       Microsoft\nVirtualization type:                     full\nL1d cache:                               64 KiB (2 instances)\nL1i cache:                               64 KiB (2 instances)\nL2 cache:                                1 MiB (2 instances)\nL3 cache:                                32 MiB (1 instance)\nNUMA node(s):                            1\nNUMA node0 CPU(s):                       0-3\nVulnerability Gather data sampling:      Not affected\nVulnerability Ghostwrite:                Not affected\nVulnerability Indirect target selection: Not affected\nVulnerability Itlb multihit:             Not affected\nVulnerability L1tf:                      Not affected\nVulnerability Mds:                       Not affected\nVulnerability Meltdown:                  Not affected\nVulnerability Mmio stale data:           Not affected\nVulnerability Old microcode:             Not affected\nVulnerability Reg file data sampling:    Not affected\nVulnerability Retbleed:                  Not affected\nVulnerability Spec rstack overflow:      Vulnerable: Safe RET, no microcode\nVulnerability Spec store bypass:         Vulnerable\nVulnerability Spectre v1:                Mitigation; usercopy/swapgs barriers and __user pointer sanitization\nVulnerability Spectre v2:                Mitigation; Retpolines; STIBP disabled; RSB filling; PBRSB-eIBRS Not affected; BHI Not affected\nVulnerability Srbds:                     Not affected\nVulnerability Tsa:                       Vulnerable: No microcode\nVulnerability Tsx async abort:           Not affected\nVulnerability Vmscape:                   Not affected",
+    "binary_format": "build/rr:       ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=89bdd38587bbf09202122bb75ee2cb4043535db7, for GNU/Linux 3.2.0, not stripped\nbuild/rr_tests: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=b70f4d0bf0caec7cb0e9b1ffa5ce258fc3d8b6e9, for GNU/Linux 3.2.0, not stripped\nbuild/rr_bench: ELF 64-bit LSB pie executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, BuildID[sha1]=1a8d7679cf920021bb43aafc69b25c2a6a317235, for GNU/Linux 3.2.0, not stripped\n",
+    "benchmark_rows": 12,
+    "timing_scope": "query includes heuristic generation/certification and path reconstruction; excludes path verifier; first is fresh workspace, not evicted CPU cache",
+    "memory_scope": "tracked requested bytes including graph, workspace and harness inputs/verification/samples; excludes allocator metadata and OS RSS",
+    "compile_flags_verified": true,
+    "quantile_recomputation_verified": true,
+    "cross_architecture_logical_results_match": true,
+    "artifact_url": "https://github.com/QSOLKCB/ROADRUNNER/actions/runs/38540648384/artifacts/11881494922",
+    "original_expiry": "2026-10-28T09:12:37Z"
+  }
+]

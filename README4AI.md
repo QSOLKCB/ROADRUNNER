@@ -9,3 +9,5 @@ Local sanitizer (set ASAN_OPTIONS=detect_leaks=0 only where ptrace blocks LeakSa
 Python 3 is only needed for CLI integration tests/evidence orchestration. No pip packages are required. Benchmark latency includes path reconstruction; A* includes heuristic generation/validation. Constructor memory and preprocessing are separate fields. Read docs/BENCHMARKS.md before drawing conclusions. No performance threshold in noisy shared CI.
 
 The initial foundation mission did not authorize merges. Later explicit user authorization permits merging only after exact-final-head Codex reports No issues, applicable CI passes and independent review is clear; a stale review or CI alone does not qualify. No TRINITY/TRIALITY integration is implemented.
+
+Repeated-target A*: rr_heuristic_plan_create copies/certifies bounds once; rr_search_plan reuses them with a borrowed immutable graph. Include plan setup/copy, peak memory and query count in amortization comparisons. Ordinary rr_search remains unchanged.
