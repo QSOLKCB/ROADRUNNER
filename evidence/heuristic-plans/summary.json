@@ -1,0 +1,546 @@
+{
+  "metadata": {
+    "utc": "2026-10-15T16:26:53.000869+00:00",
+    "source_commit": "4d45ef20430e5583f3bb244aab07b973bcc67aae",
+    "source_status": "M .github/workflows/native.yml\n M CMakeLists.txt\n M Makefile\n M README4AI.md\n M docs/ARCHITECTURE.md\n M include/roadrunner.h\n M src/roadrunner.c\n M tests/test_roadrunner.c\n?? benchmarks/__pycache__/\n?? benchmarks/plan_bench.c\n?? benchmarks/plan_run.py\n?? evidence/native-pr1-final/\n?? tests/test_plan_bench.py",
+    "source_digest": "506ae060bd849ef36aa3c721d914ccd591b92d69303a5953ebfd20bedb3418cc",
+    "binary_sha256": "da8a9f07ee5ce8dbf33e142ac6dac47d0868274f1bf51574bb196723f9f339e1",
+    "compiler": "cc (Debian 14.2.0-19) 14.2.0\nCopyright (C) 2024 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.",
+    "flags": "-O3 -DNDEBUG -std=c17 -Wall -Wextra -Wpedantic -Werror -Iinclude",
+    "platform": "Linux-6.18.44-x86_64-with-glibc2.41",
+    "uname": [
+      "Linux",
+      "6bc903037e8a",
+      "6.18.44",
+      "#1 SMP Sat Sep 26 20:02:31 UTC 2026",
+      "x86_64",
+      ""
+    ],
+    "cpu": "Command '['lscpu']' returned non-zero exit status 1.",
+    "workloads": [
+      [
+        "declared",
+        16,
+        123456789
+      ],
+      [
+        "heldout",
+        24,
+        987654321
+      ]
+    ],
+    "families": [
+      "local",
+      "weighted",
+      "zero",
+      "unit"
+    ],
+    "query_counts": [
+      1,
+      10,
+      100,
+      1000
+    ],
+    "timing_scope": "CLOCK_MONOTONIC; no warmups. Query includes search/reconstruction; legacy certifies per call. Common heuristic generated once. Plan setup includes copy, certification and caller-h release. Lifecycle is one contiguous interval containing input generation, graph/workspace/heuristic setup, plan setup, queries and core/heuristic teardown. Common harness buffer allocation/free, independent verification and serialization occur outside that interval; their timing is separately reported. All paths are retained in common harness buffers for later verification. Process wall includes the entire process.",
+    "memory_scope": "Requested bytes of all harness and core allocations, including caller h/copy constructor peak, oracle, inputs and samples; excludes stack, allocator metadata, libc internals and RSS. Plan frees caller h after creation; legacy retains it.",
+    "comparison_warning": "Shared-host characterization only. Hashes are replay diagnostics; each C run independently validates exact shortest costs and route edges. Held-out cases fixed before measurements."
+  },
+  "summary": [
+    {
+      "split": "declared",
+      "family": "local",
+      "side": 16,
+      "seed": 123456789,
+      "discrete_Q_results": [
+        {
+          "queries": 1,
+          "pair_ratios": [
+            1.0725304591590314,
+            1.0993953337090456,
+            0.5917650896094124
+          ],
+          "median_lifecycle_ratio": 1.0725304591590314,
+          "all_pairs_improve": false,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": true,
+          "status": "measured"
+        },
+        {
+          "queries": 10,
+          "pair_ratios": [
+            0.8178811127134387,
+            0.8918163619780946,
+            0.8615129781657643
+          ],
+          "median_lifecycle_ratio": 0.8615129781657643,
+          "all_pairs_improve": true,
+          "all_pairs_improve_10_percent": true,
+          "positive_query_savings": true,
+          "status": "measured"
+        },
+        {
+          "queries": 100,
+          "pair_ratios": [
+            0.5551530851917811,
+            0.8993404702601073,
+            0.6854774204065162
+          ],
+          "median_lifecycle_ratio": 0.6854774204065162,
+          "all_pairs_improve": true,
+          "all_pairs_improve_10_percent": true,
+          "positive_query_savings": true,
+          "status": "measured"
+        },
+        {
+          "queries": 1000,
+          "pair_ratios": [
+            0.3184693552509795,
+            0.3167798184394308,
+            0.45753496210250766
+          ],
+          "median_lifecycle_ratio": 0.3184693552509795,
+          "all_pairs_improve": true,
+          "all_pairs_improve_10_percent": true,
+          "positive_query_savings": true,
+          "status": "measured"
+        }
+      ],
+      "first_demonstrated_Q": 10,
+      "interpretation": "Observed discrete-Q lifecycle crossing only; no universal guarantee."
+    },
+    {
+      "split": "declared",
+      "family": "weighted",
+      "side": 16,
+      "seed": 123456789,
+      "discrete_Q_results": [
+        {
+          "queries": 1,
+          "pair_ratios": [
+            0.8511696304934907,
+            1.011469806959085,
+            1.1331823793140907
+          ],
+          "median_lifecycle_ratio": 1.011469806959085,
+          "all_pairs_improve": false,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": true,
+          "status": "measured"
+        },
+        {
+          "queries": 10,
+          "pair_ratios": [
+            0.9520016067789547,
+            2.2496699008449648,
+            1.1273586632327177
+          ],
+          "median_lifecycle_ratio": 1.1273586632327177,
+          "all_pairs_improve": false,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": false,
+          "status": "measured"
+        },
+        {
+          "queries": 100,
+          "pair_ratios": [
+            1.2352544706326316,
+            0.7864875436766482,
+            0.8665523520089946
+          ],
+          "median_lifecycle_ratio": 0.8665523520089946,
+          "all_pairs_improve": false,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": false,
+          "status": "measured"
+        },
+        {
+          "queries": 1000,
+          "pair_ratios": [
+            0.9332447976072384,
+            0.7689029667834957,
+            0.9652026593879945
+          ],
+          "median_lifecycle_ratio": 0.9332447976072384,
+          "all_pairs_improve": true,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": true,
+          "status": "measured"
+        }
+      ],
+      "first_demonstrated_Q": 1000,
+      "interpretation": "Observed discrete-Q lifecycle crossing only; no universal guarantee."
+    },
+    {
+      "split": "declared",
+      "family": "zero",
+      "side": 16,
+      "seed": 123456789,
+      "discrete_Q_results": [
+        {
+          "queries": 1,
+          "pair_ratios": [
+            1.1090563668673457,
+            1.0444374813467727,
+            1.1010487874493382
+          ],
+          "median_lifecycle_ratio": 1.1010487874493382,
+          "all_pairs_improve": false,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": false,
+          "status": "measured"
+        },
+        {
+          "queries": 10,
+          "pair_ratios": [
+            6.00501826656121,
+            0.9268449751571113,
+            1.3257783076061394
+          ],
+          "median_lifecycle_ratio": 1.3257783076061394,
+          "all_pairs_improve": false,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": false,
+          "status": "measured"
+        },
+        {
+          "queries": 100,
+          "pair_ratios": [
+            0.8255267519328036,
+            0.9406587011968993,
+            4.1634337342638705
+          ],
+          "median_lifecycle_ratio": 0.9406587011968993,
+          "all_pairs_improve": false,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": true,
+          "status": "measured"
+        },
+        {
+          "queries": 1000,
+          "pair_ratios": [
+            0.9340045599649839,
+            0.9631886353522795,
+            0.9409150771982232
+          ],
+          "median_lifecycle_ratio": 0.9409150771982232,
+          "all_pairs_improve": true,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": true,
+          "status": "measured"
+        }
+      ],
+      "first_demonstrated_Q": 1000,
+      "interpretation": "Observed discrete-Q lifecycle crossing only; no universal guarantee."
+    },
+    {
+      "split": "declared",
+      "family": "unit",
+      "side": 16,
+      "seed": 123456789,
+      "discrete_Q_results": [
+        {
+          "queries": 1,
+          "pair_ratios": [
+            1.4515255589137102,
+            1.6134399300043327,
+            0.3717666914843011
+          ],
+          "median_lifecycle_ratio": 1.4515255589137102,
+          "all_pairs_improve": false,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": false,
+          "status": "measured"
+        },
+        {
+          "queries": 10,
+          "pair_ratios": [
+            0.9256921238793218,
+            0.9781463768643739,
+            0.9779794192949866
+          ],
+          "median_lifecycle_ratio": 0.9779794192949866,
+          "all_pairs_improve": true,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": true,
+          "status": "measured"
+        },
+        {
+          "queries": 100,
+          "pair_ratios": [
+            0.7870708692813396,
+            0.5361803347202007,
+            0.6254290647210968
+          ],
+          "median_lifecycle_ratio": 0.6254290647210968,
+          "all_pairs_improve": true,
+          "all_pairs_improve_10_percent": true,
+          "positive_query_savings": true,
+          "status": "measured"
+        },
+        {
+          "queries": 1000,
+          "pair_ratios": [
+            0.7425272283049283,
+            0.8130978213610701,
+            0.5801617929864332
+          ],
+          "median_lifecycle_ratio": 0.7425272283049283,
+          "all_pairs_improve": true,
+          "all_pairs_improve_10_percent": true,
+          "positive_query_savings": true,
+          "status": "measured"
+        }
+      ],
+      "first_demonstrated_Q": 10,
+      "interpretation": "Observed discrete-Q lifecycle crossing only; no universal guarantee."
+    },
+    {
+      "split": "heldout",
+      "family": "local",
+      "side": 24,
+      "seed": 987654321,
+      "discrete_Q_results": [
+        {
+          "queries": 1,
+          "pair_ratios": [
+            1.044917946496762,
+            1.0387028135446035,
+            1.0441908731972056
+          ],
+          "median_lifecycle_ratio": 1.0441908731972056,
+          "all_pairs_improve": false,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": true,
+          "status": "measured"
+        },
+        {
+          "queries": 10,
+          "pair_ratios": [
+            0.6652095948754919,
+            0.6742577372963398,
+            2.7192636363684497
+          ],
+          "median_lifecycle_ratio": 0.6742577372963398,
+          "all_pairs_improve": false,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": true,
+          "status": "measured"
+        },
+        {
+          "queries": 100,
+          "pair_ratios": [
+            0.41303388887359765,
+            0.3641095864587675,
+            0.4139443722414423
+          ],
+          "median_lifecycle_ratio": 0.41303388887359765,
+          "all_pairs_improve": true,
+          "all_pairs_improve_10_percent": true,
+          "positive_query_savings": true,
+          "status": "measured"
+        },
+        {
+          "queries": 1000,
+          "pair_ratios": [
+            0.3316635775419449,
+            0.2803527304127144,
+            0.2981306512694001
+          ],
+          "median_lifecycle_ratio": 0.2981306512694001,
+          "all_pairs_improve": true,
+          "all_pairs_improve_10_percent": true,
+          "positive_query_savings": true,
+          "status": "measured"
+        }
+      ],
+      "first_demonstrated_Q": 100,
+      "interpretation": "Observed discrete-Q lifecycle crossing only; no universal guarantee."
+    },
+    {
+      "split": "heldout",
+      "family": "weighted",
+      "side": 24,
+      "seed": 987654321,
+      "discrete_Q_results": [
+        {
+          "queries": 1,
+          "pair_ratios": [
+            1.1177410934405663,
+            1.0316562568327396,
+            0.8253986509909573
+          ],
+          "median_lifecycle_ratio": 1.0316562568327396,
+          "all_pairs_improve": false,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": false,
+          "status": "measured"
+        },
+        {
+          "queries": 10,
+          "pair_ratios": [
+            0.9375434810696599,
+            1.1711316882549452,
+            0.9945064229302555
+          ],
+          "median_lifecycle_ratio": 0.9945064229302555,
+          "all_pairs_improve": false,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": true,
+          "status": "measured"
+        },
+        {
+          "queries": 100,
+          "pair_ratios": [
+            0.9581697388149756,
+            0.9371012748782217,
+            0.9179396252026496
+          ],
+          "median_lifecycle_ratio": 0.9371012748782217,
+          "all_pairs_improve": true,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": true,
+          "status": "measured"
+        },
+        {
+          "queries": 1000,
+          "pair_ratios": [
+            0.9163579201138871,
+            0.861127796255242,
+            0.9080720163338578
+          ],
+          "median_lifecycle_ratio": 0.9080720163338578,
+          "all_pairs_improve": true,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": true,
+          "status": "measured"
+        }
+      ],
+      "first_demonstrated_Q": 100,
+      "interpretation": "Observed discrete-Q lifecycle crossing only; no universal guarantee."
+    },
+    {
+      "split": "heldout",
+      "family": "zero",
+      "side": 24,
+      "seed": 987654321,
+      "discrete_Q_results": [
+        {
+          "queries": 1,
+          "pair_ratios": [
+            0.9958496522477319,
+            1.0359688334948383,
+            0.9969280170860059
+          ],
+          "median_lifecycle_ratio": 0.9969280170860059,
+          "all_pairs_improve": false,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": true,
+          "status": "measured"
+        },
+        {
+          "queries": 10,
+          "pair_ratios": [
+            1.0161158906089809,
+            0.9856427581720542,
+            0.9328216242828017
+          ],
+          "median_lifecycle_ratio": 0.9856427581720542,
+          "all_pairs_improve": false,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": true,
+          "status": "measured"
+        },
+        {
+          "queries": 100,
+          "pair_ratios": [
+            0.9272260486177116,
+            0.968766991580837,
+            0.934001372346244
+          ],
+          "median_lifecycle_ratio": 0.934001372346244,
+          "all_pairs_improve": true,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": true,
+          "status": "measured"
+        },
+        {
+          "queries": 1000,
+          "pair_ratios": [
+            0.9313659653895323,
+            1.0356916541110706,
+            0.9377913963734924
+          ],
+          "median_lifecycle_ratio": 0.9377913963734924,
+          "all_pairs_improve": false,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": true,
+          "status": "measured"
+        }
+      ],
+      "first_demonstrated_Q": 100,
+      "interpretation": "Observed discrete-Q lifecycle crossing only; no universal guarantee."
+    },
+    {
+      "split": "heldout",
+      "family": "unit",
+      "side": 24,
+      "seed": 987654321,
+      "discrete_Q_results": [
+        {
+          "queries": 1,
+          "pair_ratios": [
+            0.7721092377248915,
+            1.0822187996355894,
+            3.4343105331149855
+          ],
+          "median_lifecycle_ratio": 1.0822187996355894,
+          "all_pairs_improve": false,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": true,
+          "status": "measured"
+        },
+        {
+          "queries": 10,
+          "pair_ratios": [
+            0.8481560197880035,
+            0.9299547996561122,
+            0.9026062166475692
+          ],
+          "median_lifecycle_ratio": 0.9026062166475692,
+          "all_pairs_improve": true,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": true,
+          "status": "measured"
+        },
+        {
+          "queries": 100,
+          "pair_ratios": [
+            0.9125413325494863,
+            0.7602743153214626,
+            0.8303919838473152
+          ],
+          "median_lifecycle_ratio": 0.8303919838473152,
+          "all_pairs_improve": true,
+          "all_pairs_improve_10_percent": false,
+          "positive_query_savings": true,
+          "status": "measured"
+        },
+        {
+          "queries": 1000,
+          "pair_ratios": [
+            0.7182043447530239,
+            0.8219885380040749,
+            0.6854302118506869
+          ],
+          "median_lifecycle_ratio": 0.7182043447530239,
+          "all_pairs_improve": true,
+          "all_pairs_improve_10_percent": true,
+          "positive_query_savings": true,
+          "status": "measured"
+        }
+      ],
+      "first_demonstrated_Q": 10,
+      "interpretation": "Observed discrete-Q lifecycle crossing only; no universal guarantee."
+    }
+  ]
+}
