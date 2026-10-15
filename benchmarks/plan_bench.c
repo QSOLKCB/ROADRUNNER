@@ -18,8 +18,12 @@ static void *allocate(void *ctx,size_t bytes) {
 static void release(void *ctx,void *ptr) {
     tracker *t=ctx; if(ptr) { header *p=(header *)ptr-1; t->live-=p->bytes; t->frees++; free(p); }
 }
+#ifdef RR_PLAN_FROZEN_CLOCK
+static size_t clock_reads;
+#endif
 static double now(void) {
 #ifdef RR_PLAN_FROZEN_CLOCK
+    clock_reads++;
     return 0;
 #else
     struct timespec t; if(clock_gettime(CLOCK_MONOTONIC,&t)) abort();
@@ -28,9 +32,12 @@ static double now(void) {
 }
 static uint32_t random32(uint32_t *s) { uint32_t x=*s; x^=x<<13; x^=x>>17; x^=x<<5; return *s=x; }
 static uint64_t hash(uint64_t h,uint64_t x) { return (h^x)*UINT64_C(1099511628211); }
-static unsigned number(const char *s) {
-    unsigned x=0; if(!*s) return 0;
-    for(;*s;s++) { if(*s<'0'||*s>'9'||x>100000000u) return 0; x=x*10+(unsigned)(*s-'0'); }
+static uint32_t number(const char *s) {
+    uint32_t x=0; if(!*s) return 0;
+    for(;*s;s++) { if(*s<'0'||*s>'9') return 0;
+        uint32_t digit=(uint32_t)(*s-'0');
+        if(x>(UINT32_MAX-digit)/10) return 0;
+        x=x*10+digit; }
     return x;
 }
 typedef struct { double us; uint32_t source; rr_status status; rr_result result; uint64_t path_hash; } sample;
@@ -68,8 +75,10 @@ int main(int argc,char **argv) {
     for(uint32_t u=0;u<n;u++) h[u]=zero?0:(side-1-u%side)+(side-1-u/side);
     heuristic_us=(now()-t)*1e6;
     size_t graph_bytes=rr_graph_bytes(g),plan_bytes=0;
-    if(planned) { t=now(); if(rr_heuristic_plan_create(g,target,h,&a,&plan)!=RR_OK) return 3;
-        plan_bytes=rr_heuristic_plan_bytes(plan); release(&mem,h); h=NULL; plan_us=(now()-t)*1e6; }
+    t=now(); /* Matched component-timing probes in all modes. */
+    if(planned) { if(rr_heuristic_plan_create(g,target,h,&a,&plan)!=RR_OK) return 3;
+        plan_bytes=rr_heuristic_plan_bytes(plan); release(&mem,h); h=NULL; }
+    plan_us=(now()-t)*1e6;
     size_t constructor_peak=mem.peak,steady=mem.live;
     rng=seed^UINT32_C(0x9e3779b9); size_t before=mem.allocations; double sum_us=0;
     for(unsigned q=0;q<queries;q++) {
@@ -128,5 +137,9 @@ int main(int argc,char **argv) {
     t=now(); release(&mem,samples); release(&mem,edges); release(&mem,offset); release(&mem,paths); release(&mem,oracle); release(&mem,seen);
     double harness_free_us=(now()-t)*1e6;
     printf("],\"teardown_us\":%.9f,\"lifecycle_us\":%.9f,\"harness_allocate_us\":%.9f,\"harness_free_us\":%.9f,\"live_bytes_after_teardown\":%zu,\"frees\":%zu,\"verified\":true}\n",teardown_us,lifecycle_us,harness_allocate_us,harness_free_us,mem.live,mem.frees);
+#ifdef RR_PLAN_FROZEN_CLOCK
+    /* Regression: identical instrumentation count for legacy, plan and AUTO. */
+    if(clock_reads != 19+(size_t)queries*4) return 4;
+#endif
     return query_allocations||mem.live||mem.allocations!=mem.frees?4:0;
 }

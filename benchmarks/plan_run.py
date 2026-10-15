@@ -18,6 +18,10 @@ FAMILIES = ("local", "weighted", "zero", "unit")
 COUNTS = (1, 10, 100, 1000)
 
 
+def read_flags(value):
+    return Path(value[1:]).read_text() if value.startswith("@") else value
+
+
 def compare(legacy, plan):
     for key in ("family", "side", "queries", "seed", "target", "graph_hash", "query_hash"):
         if legacy[key] != plan[key]:
@@ -41,7 +45,7 @@ def compare(legacy, plan):
             "status": "measured" if measurable else "inconclusive_clock_resolution"}
 
 
-def summarize(pairs):
+def summarize(pairs, expected_repeats):
     summaries = []
     for split, side, seed in WORKLOADS:
         for family in FAMILIES:
@@ -50,7 +54,9 @@ def summarize(pairs):
                 subset = [p for p in pairs if (p["split"], p["family"], p["queries"]) == (split, family, q)]
                 if not subset:
                     continue
-                valid = all(p["comparison"]["status"] == "measured" for p in subset)
+                complete = (len(subset) == expected_repeats and
+                            {p["repeat"] for p in subset} == set(range(expected_repeats)))
+                valid = complete and all(p["comparison"]["status"] == "measured" for p in subset)
                 ratios = [p["comparison"]["lifecycle_plan_over_legacy"] for p in subset]
                 savings = [p["comparison"]["query_saving_us"] for p in subset]
                 rows.append({"queries": q, "pair_ratios": ratios,
@@ -58,7 +64,8 @@ def summarize(pairs):
                              "all_pairs_improve": valid and all(r < 1 for r in ratios),
                              "all_pairs_improve_10_percent": valid and all(r <= .9 for r in ratios),
                              "positive_query_savings": valid and all(s > 0 for s in savings),
-                             "status": "measured" if valid else "inconclusive_clock_resolution"})
+                             "status": "incomplete_repetitions" if not complete else
+                             "measured" if valid else "inconclusive_clock_resolution"})
             crossings = [r["queries"] for r in rows if r["all_pairs_improve"] and r["positive_query_savings"]]
             summaries.append({"split": split, "family": family, "side": side, "seed": seed,
                               "discrete_Q_results": rows,
@@ -79,11 +86,14 @@ def main():
     if not 2 <= args.repeats <= 9:
         parser.error("repeats must be 2..9 for alternating pairs")
     binary = Path(args.binary).resolve()
+    flags = read_flags(args.flags)
     metadata = {"utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),
                 "source_commit": command(["git", "rev-parse", "HEAD"]),
                 "source_status": command(["git", "status", "--porcelain"]),
                 "source_digest": source_digest(), "binary_sha256": hashlib.sha256(binary.read_bytes()).hexdigest(),
-                "compiler": command([args.compiler, "--version"]), "flags": args.flags,
+                "compiler": command([args.compiler, "--version"]), "flags": flags, "flags_argument": args.flags,
+                "flags_sha256": hashlib.sha256(flags.encode()).hexdigest(),
+                "expected_repeats": args.repeats,
                 "platform": platform.platform(), "uname": list(platform.uname()),
                 "cpu": command(["sysctl", "-n", "machdep.cpu.brand_string"])
                 if platform.system() == "Darwin" else command(["lscpu"]),
@@ -97,7 +107,7 @@ def main():
 
     def save():
         output.write_text(json.dumps({"metadata": metadata, "pairs": pairs, "auto_references": references,
-                                      "summary": summarize(pairs)}, indent=2) + "\n")
+                                      "summary": summarize(pairs, args.repeats)}, indent=2) + "\n")
 
     def run(mode, family, side, q, seed):
         start = time.perf_counter()

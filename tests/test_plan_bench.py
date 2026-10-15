@@ -5,10 +5,11 @@ import json
 from pathlib import Path
 import subprocess
 import sys
+import tempfile
 import unittest
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "benchmarks"))
-from plan_run import compare, summarize
+from plan_run import compare, summarize, read_flags
 
 BINARIES = sys.argv[1:]
 sys.argv[1:] = []
@@ -40,11 +41,54 @@ class PlanBenchTest(unittest.TestCase):
                 with self.assertRaises(ValueError):
                     compare(rows["legacy"], broken)
 
+    def test_seed_boundaries(self):
+        for binary in BINARIES:
+            for seed in ("1000000009", "1000000010", "4294967295"):
+                row = json.loads(subprocess.check_output(
+                    [binary, "legacy", "local", "4", "1", seed], text=True))
+                self.assertEqual(row["seed"], int(seed))
+            for seed in ("0", "4294967296", "9999999999999999999999", "-1", "+1"):
+                self.assertEqual(subprocess.run(
+                    [binary, "legacy", "local", "4", "1", seed], capture_output=True).returncode, 2)
+
+    def test_compilation_database_contents(self):
+        with tempfile.TemporaryDirectory() as directory:
+            database = Path(directory) / "compile_commands.json"
+            contents = '[{"command": "cc -O3 -DNDEBUG -std=c17"}]'
+            database.write_text(contents)
+            self.assertEqual(read_flags("@" + str(database)), contents)
+            self.assertEqual(read_flags("-O2"), "-O2")
+
+    def test_missing_compilation_database(self):
+        script = Path(__file__).resolve().parents[1] / "benchmarks" / "plan_run.py"
+        with tempfile.TemporaryDirectory() as directory:
+            output = Path(directory) / "result.json"
+            result = subprocess.run([sys.executable, str(script), "--binary", BINARIES[0],
+                                     "--output", str(output), "--flags=@" + str(Path(directory) / "missing")],
+                                    capture_output=True)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertFalse(output.exists())
+
+    def test_partial_repetitions(self):
+        pair = {"split": "declared", "family": "weighted", "queries": 100, "repeat": 0,
+                "comparison": {"status": "measured", "lifecycle_plan_over_legacy": .5,
+                               "query_saving_us": 1}}
+        for pairs in ([pair], [pair, copy.deepcopy(pair)]):
+            result = summarize(pairs, 2)
+            self.assertTrue(all(r["first_demonstrated_Q"] is None for r in result))
+            row = next(r for r in result if r["family"] == "weighted" and r["split"] == "declared")
+            self.assertEqual(row["discrete_Q_results"][0]["status"], "incomplete_repetitions")
+        second = copy.deepcopy(pair)
+        second["repeat"] = 1
+        result = summarize([pair, second], 2)
+        row = next(r for r in result if r["family"] == "weighted" and r["split"] == "declared")
+        self.assertEqual(row["first_demonstrated_Q"], 100)
+
     def test_no_false_crossing(self):
         pairs = [{"split": "declared", "family": "weighted", "queries": 100,
-                  "comparison": {"status": "inconclusive_clock_resolution",
+                  "repeat": 0, "comparison": {"status": "inconclusive_clock_resolution",
                                  "lifecycle_plan_over_legacy": None, "query_saving_us": None}}]
-        result = summarize(pairs)
+        result = summarize(pairs, 2)
         self.assertTrue(all(r["first_demonstrated_Q"] is None for r in result))
 
 

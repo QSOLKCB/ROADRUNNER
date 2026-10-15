@@ -47,28 +47,41 @@ route edges. Plan/legacy statuses, costs, lengths and all search counters match.
 
 ## Local result, with limits
 
-`evidence/heuristic-plans/local.json.gz` retains all 96 alternating pairs and 24
-AUTO references. `summary.json` contains source digest, binary hash, compiler,
-platform and summaries. The recorded source commit is the local PR1-equivalent
-parent; its dirty status is explicit, and the source-content digest identifies
-the candidate files actually compiled. Hosted receipts bind the final remote
-commit directly. Earlier exploratory measurements are retained separately in
-`exploratory.json.gz`; they predate small harness validation/CLI cleanups and
-are not final-source validation.
+`evidence/heuristic-plans/review-final.json.gz` retains all 96 alternating pairs
+and 24 AUTO references after review fixes. `review-final-summary.json` contains
+source digest, binary hash, compiler, platform and recomputable summaries. The
+recorded source commit is the local PR1-equivalent parent; its dirty status is
+explicit, and the source-content digest identifies the candidate files actually
+compiled. Hosted receipts bind the final remote commit directly.
 
-On this shared Linux x86_64 GCC 14.2 host, held-out local-source plan/legacy
-lifecycle ratios at Q=100 were 0.4130, 0.3641 and 0.4139 (median 0.4130), about
-59% shorter measured lifecycle. At Q=1000 the median ratio was 0.2981. All three
-held-out local Q=1 measurements were slower (median 1.0442). Q=10 had a favorable
-median but did not improve in every pair; the first demonstrated all-pair
-crossing for that workload was Q=100. This is workload-specific characterization,
+Review found unmatched plan-only clock probes, opaque compilation-database
+paths, a restricted seed parser, and incomplete repeat sets potentially marked
+conclusive. The corrected harness takes equivalent setup timestamps in all
+modes (including a measured empty setup slot for legacy/AUTO), verifies the
+frozen-clock call count, loads actual compilation-database contents with path
+and hash, accepts all nonzero uint32 seeds, and requires the complete distinct
+repetition set for a crossing. Boundary/missing-file/duplicate/partial tests
+cover the fixes. Previous `local.json.gz`/`summary.json` and `exploratory.json.gz`
+remain historical, not evidence for the corrected source. The first corrected
+run `review-corrected.json.gz` is also retained as provisional: local validation
+overlapped briefly. The final run began after those checks finished and no
+additional local validation was run during its timing. No raw runs were removed.
+
+On this shared Linux x86_64 GCC 14.2 host, the corrected held-out local-source
+Q=100 median plan/legacy lifecycle ratio was 0.4242, about 58% shorter. At Q=1000
+the median ratio was 0.2845. Q=1 was slower (median 1.0306). The first all-pair
+held-out local crossing was Q=10 (median 0.8133); the declared size's first
+crossing was Q=100. Crossings moved between runs, underscoring noise rather
+than implying universal thresholds. These are workload-specific observations,
 not a one-shot, universal or production speed guarantee.
 
 Weighted and all-zero controls showed weaker/noisier benefits; neither met a
-repeatable 10% held-out improvement at any tested Q. All raw samples and adverse
-ratios remain present. Zero-clock tests preserve zero samples and classify
-unmeasurable comparisons as inconclusive; no epsilon or selected subset is used.
-A discrete-Q crossing is not an analytical guarantee for intermediate/future Q.
+repeatable 10% held-out improvement at any tested Q. The declared weighted case
+had no demonstrated all-pair crossing. All raw samples and adverse ratios
+remain present. Zero-clock tests preserve zero samples and classify unmeasurable
+comparisons as inconclusive; no epsilon or selected subset is used. Incomplete
+or duplicate repetitions cannot produce a crossing. A discrete-Q crossing is
+not an analytical guarantee for intermediate/future Q.
 
 For the 576-node held-out graph, the plan requested 4,656 bytes, adding 4,656
 bytes at constructor peak and 48 bytes after releasing the 4,608-byte caller
