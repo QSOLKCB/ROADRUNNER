@@ -19,6 +19,13 @@ struct rr_workspace {
     uint64_t *distance, *key;
     uint32_t *parent, *heap, *position, *mark;
 };
+struct rr_heuristic_plan {
+    const rr_graph *graph;
+    uint32_t target;
+    size_t bytes;
+    rr_allocator allocator;
+    uint64_t h[];
+};
 static void *default_allocate(void *c, size_t n) { (void)c; return malloc(n); }
 static void default_release(void *c, void *p) { (void)c; free(p); }
 static int allocator_get(const rr_allocator *in, rr_allocator *out) {
@@ -114,9 +121,26 @@ static int heuristic_valid(const rr_graph *g,uint32_t target,const uint64_t *h) 
     }
     return 1;
 }
-rr_status rr_search(const rr_graph *g,rr_workspace *w,rr_algorithm algorithm,
+rr_status rr_heuristic_plan_create(const rr_graph *g,uint32_t target,const uint64_t *h,
+                                    const rr_allocator *allocator,rr_heuristic_plan **out) {
+    rr_allocator a; rr_heuristic_plan *p; size_t bytes=sizeof(rr_heuristic_plan);
+    if(!out) return RR_INVALID;
+    *out=NULL;
+    if(!g || target>=g->n || !h || !allocator_get(allocator,&a)) return RR_INVALID;
+    if(!add_bytes(&bytes,g->n,sizeof(uint64_t))) return RR_OVERFLOW;
+    p=a.allocate(a.context,bytes); if(!p) return RR_NO_MEMORY;
+    p->graph=g; p->target=target; p->bytes=bytes; p->allocator=a;
+    memcpy(p->h,h,(size_t)g->n*sizeof(uint64_t));
+    if(!heuristic_valid(g,target,p->h)) { a.release(a.context,p); return RR_INVALID; }
+    *out=p; return RR_OK;
+}
+void rr_heuristic_plan_destroy(rr_heuristic_plan *p) {
+    if(p) p->allocator.release(p->allocator.context,p);
+}
+size_t rr_heuristic_plan_bytes(const rr_heuristic_plan *p) { return p ? p->bytes:0; }
+static rr_status search(const rr_graph *g,rr_workspace *w,rr_algorithm algorithm,
                    uint32_t source,uint32_t target,const uint64_t *h,
-                   uint32_t *path,size_t capacity,rr_result *r) {
+                   uint32_t *path,size_t capacity,rr_result *r,int certified) {
     uint32_t u; size_t head=0; int bfs;
     if(!r) return RR_INVALID;
     memset(r,0,sizeof(*r)); r->cost=RR_INFINITY;
@@ -125,7 +149,7 @@ rr_status rr_search(const rr_graph *g,rr_workspace *w,rr_algorithm algorithm,
     if(algorithm==RR_AUTO) algorithm=g->unit ? RR_BFS:RR_DIJKSTRA;
     if(algorithm==RR_BFS && !g->unit) return RR_UNSUPPORTED;
     r->algorithm=algorithm; r->workspace_bytes=w->bytes; bfs=algorithm==RR_BFS;
-    r->heuristic_used=algorithm==RR_ASTAR && heuristic_valid(g,target,h);
+    r->heuristic_used=algorithm==RR_ASTAR && (certified || heuristic_valid(g,target,h));
     if(!r->heuristic_used) h=NULL;
     if(w->epoch==RR_EPOCH_LIMIT) { memset(w->mark,0,(size_t)w->n*sizeof(*w->mark)); w->epoch=0; }
     w->epoch++; touch(w,source);
@@ -159,6 +183,16 @@ rr_status rr_search(const rr_graph *g,rr_workspace *w,rr_algorithm algorithm,
     u=target;
     for(size_t j=r->path_length;j>0;j--) { path[j-1]=u; u=w->parent[u]; }
     return RR_OK;
+}
+rr_status rr_search(const rr_graph *g,rr_workspace *w,rr_algorithm algorithm,
+                    uint32_t source,uint32_t target,const uint64_t *h,
+                    uint32_t *path,size_t capacity,rr_result *r) {
+    return search(g,w,algorithm,source,target,h,path,capacity,r,0);
+}
+rr_status rr_search_plan(const rr_heuristic_plan *p,rr_workspace *w,uint32_t source,
+                         uint32_t *path,size_t capacity,rr_result *r) {
+    return search(p ? p->graph:NULL,w,RR_ASTAR,source,p ? p->target:0,
+                  p ? p->h:NULL,path,capacity,r,1);
 }
 const char *rr_status_string(rr_status s) {
     switch(s) { case RR_OK:return "ok"; case RR_INVALID:return "invalid";

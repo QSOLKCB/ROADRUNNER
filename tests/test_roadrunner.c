@@ -38,6 +38,15 @@ static rr_status search(const rr_graph *graph, rr_workspace *workspace,
                      path,capacity,result);
 }
 
+static rr_status search_plan(const rr_heuristic_plan *plan,
+                             rr_workspace *workspace, uint32_t source,
+                             uint32_t *path, size_t capacity, rr_result *result) {
+    ++queries;
+    case_source=source;
+    case_algorithm=RR_ASTAR;
+    return rr_search_plan(plan,workspace,source,path,capacity,result);
+}
+
 static uint32_t random_state=UINT32_C(0x8d46af21);
 static uint32_t random_u32(void) {
     /* Defined unsigned arithmetic, independent of libc's random generator. */
@@ -427,6 +436,193 @@ static void test_heuristics(void) {
     }
 }
 
+static void check_invalid_plan_result(const rr_result *result) {
+    rr_result empty;
+    memset(&empty,0,sizeof(empty));
+    empty.cost=RR_INFINITY;
+    compare_results(result,&empty);
+}
+
+static void test_plan_validation(void) {
+    const rr_edge edges[]={{0,1,1},{2,3,0},{3,2,0}};
+    uint64_t h[]={1,0,UINT64_MAX,UINT64_MAX};
+    rr_graph *graph=NULL;
+    rr_workspace *workspace=NULL,*small=NULL;
+    rr_heuristic_plan *plan=NULL,*out;
+    rr_result result;
+    uint32_t path[MAX_N];
+    allocation_state state={0};
+    rr_allocator allocator={tracked_allocate,tracked_release,&state};
+    rr_allocator missing_allocate={NULL,tracked_release,&state};
+    rr_allocator missing_release={tracked_allocate,NULL,&state};
+    case_id=10;
+    case_target=1;
+    rr_heuristic_plan_destroy(NULL);
+    CHECK(rr_heuristic_plan_bytes(NULL)==0);
+    CHECK(rr_graph_create(4,3,edges,NULL,&graph)==RR_OK);
+    CHECK(rr_workspace_create(4,NULL,&workspace)==RR_OK);
+    CHECK(rr_workspace_create(3,NULL,&small)==RR_OK);
+    CHECK(rr_heuristic_plan_create(graph,1,h,&allocator,NULL)==RR_INVALID);
+    out=(rr_heuristic_plan *)&state;
+    CHECK(rr_heuristic_plan_create(NULL,1,h,&allocator,&out)==RR_INVALID && out==NULL);
+    out=(rr_heuristic_plan *)&state;
+    CHECK(rr_heuristic_plan_create(graph,4,h,&allocator,&out)==RR_INVALID && out==NULL);
+    out=(rr_heuristic_plan *)&state;
+    CHECK(rr_heuristic_plan_create(graph,UINT32_MAX,h,&allocator,&out)==RR_INVALID && out==NULL);
+    out=(rr_heuristic_plan *)&state;
+    CHECK(rr_heuristic_plan_create(graph,1,NULL,&allocator,&out)==RR_INVALID && out==NULL);
+    out=(rr_heuristic_plan *)&state;
+    CHECK(rr_heuristic_plan_create(graph,1,h,&missing_allocate,&out)==RR_INVALID && out==NULL);
+    out=(rr_heuristic_plan *)&state;
+    CHECK(rr_heuristic_plan_create(graph,1,h,&missing_release,&out)==RR_INVALID && out==NULL);
+    CHECK(state.calls==0 && state.live==0);
+    h[1]=1;
+    out=(rr_heuristic_plan *)&state;
+    CHECK(rr_heuristic_plan_create(graph,1,h,&allocator,&out)==RR_INVALID && out==NULL);
+    h[1]=0; h[0]=2;
+    out=(rr_heuristic_plan *)&state;
+    CHECK(rr_heuristic_plan_create(graph,1,h,&allocator,&out)==RR_INVALID && out==NULL);
+    /* Certification includes edges in components unreachable from a query. */
+    h[0]=1; h[3]=0;
+    out=(rr_heuristic_plan *)&state;
+    CHECK(rr_heuristic_plan_create(graph,1,h,&allocator,&out)==RR_INVALID && out==NULL);
+    CHECK(state.live==0);
+    h[3]=UINT64_MAX;
+    state.fail_at=state.calls+1;
+    out=(rr_heuristic_plan *)&state;
+    CHECK(rr_heuristic_plan_create(graph,1,h,&allocator,&out)==RR_NO_MEMORY && out==NULL);
+    CHECK(state.live==0);
+    state.fail_at=0;
+    {
+        size_t calls=state.calls;
+        CHECK(rr_heuristic_plan_create(graph,1,h,&allocator,&plan)==RR_OK);
+        CHECK(state.calls==calls+1 && state.live==1);
+        CHECK(rr_heuristic_plan_bytes(plan)==state.last_bytes);
+        CHECK(rr_heuristic_plan_bytes(plan)>=sizeof(h));
+    }
+    fill_path(path,MAX_N);
+#define INVALID_PLAN_QUERY(expression) do { \
+    memset(&result,0xa5,sizeof(result)); \
+    CHECK((expression)==RR_INVALID); \
+    check_invalid_plan_result(&result); \
+    check_untouched(path,MAX_N); \
+} while (0)
+    INVALID_PLAN_QUERY(search_plan(NULL,workspace,0,path,MAX_N,&result));
+    INVALID_PLAN_QUERY(search_plan(plan,NULL,0,path,MAX_N,&result));
+    INVALID_PLAN_QUERY(search_plan(plan,small,0,path,MAX_N,&result));
+    INVALID_PLAN_QUERY(search_plan(plan,workspace,4,path,MAX_N,&result));
+    INVALID_PLAN_QUERY(search_plan(plan,workspace,UINT32_MAX,path,MAX_N,&result));
+    INVALID_PLAN_QUERY(search_plan(plan,workspace,0,NULL,1,&result));
+#undef INVALID_PLAN_QUERY
+    CHECK(search_plan(plan,workspace,0,path,MAX_N,NULL)==RR_INVALID);
+    check_untouched(path,MAX_N);
+    CHECK(search_plan(plan,workspace,0,path,MAX_N,&result)==RR_OK);
+    CHECK(result.cost==1 && result.path_length==2 && result.heuristic_used==1);
+    /* The allocator descriptor is copied, not retained by address. */
+    allocator.allocate=NULL; allocator.release=NULL; allocator.context=NULL;
+    rr_heuristic_plan_destroy(plan);
+    CHECK(state.live==0);
+    rr_workspace_destroy(small);
+    rr_workspace_destroy(workspace);
+    rr_graph_destroy(graph);
+}
+
+static void test_plan_ownership_binding_and_reuse(void) {
+    const rr_edge edges[]={
+        {0,1,UINT32_MAX},{1,2,UINT32_MAX},{0,3,1},
+        {3,4,UINT32_MAX},{4,3,0},{4,4,0}
+    };
+    const rr_edge other_edges[]={{0,4,7},{4,2,1},{2,0,0},{1,4,0}};
+    const uint64_t original[]={UINT64_C(2)*UINT32_MAX,UINT32_MAX,0,
+                               UINT64_MAX,UINT64_MAX,UINT64_MAX};
+    const uint64_t zero[6]={0};
+    uint64_t distances[MAX_N][MAX_N], other_distances[MAX_N][MAX_N];
+    uint64_t *input=malloc(sizeof(original));
+    rr_graph *graph=NULL,*other=NULL;
+    rr_workspace *workspace=NULL,*second_workspace=NULL;
+    rr_heuristic_plan *plans[3]={NULL,NULL,NULL};
+    allocation_state state={0};
+    rr_allocator allocator={tracked_allocate,tracked_release,&state};
+    size_t i,calls,bytes;
+    case_id=11;
+    CHECK(input!=NULL);
+    memcpy(input,original,sizeof(original));
+    floyd_warshall(6,sizeof(edges)/sizeof(edges[0]),edges,distances);
+    floyd_warshall(6,sizeof(other_edges)/sizeof(other_edges[0]),other_edges,other_distances);
+    CHECK(rr_graph_create(6,sizeof(edges)/sizeof(edges[0]),edges,&allocator,&graph)==RR_OK);
+    CHECK(rr_graph_create(6,sizeof(other_edges)/sizeof(other_edges[0]),other_edges,&allocator,&other)==RR_OK);
+    CHECK(rr_workspace_create(8,&allocator,&workspace)==RR_OK);
+    CHECK(rr_workspace_create(8,&allocator,&second_workspace)==RR_OK);
+    CHECK(rr_heuristic_plan_create(graph,2,input,&allocator,&plans[0])==RR_OK);
+    bytes=rr_heuristic_plan_bytes(plans[0]);
+    CHECK(bytes==state.last_bytes);
+    CHECK(rr_heuristic_plan_create(other,4,zero,&allocator,&plans[1])==RR_OK);
+    CHECK(rr_heuristic_plan_create(graph,0,zero,&allocator,&plans[2])==RR_OK);
+    CHECK(rr_heuristic_plan_bytes(plans[1])==bytes);
+    CHECK(rr_heuristic_plan_bytes(plans[2])==bytes);
+    CHECK(state.calls==7 && state.live==7);
+    /* Destroy the caller's heuristic storage before any plan query. */
+    memset(input,0xff,sizeof(original));
+    free(input);
+    calls=state.calls;
+    state.fail_at=calls+1;
+    for (i=0;i<1000;++i) {
+        unsigned choice=(unsigned)(i%3);
+        uint32_t source=(uint32_t)((i/3)%6), target=choice==0 ? 2:choice==1 ? 4:0;
+        const rr_graph *selected=choice==1 ? other:graph;
+        const uint64_t *h=choice==0 ? original:zero;
+        const rr_edge *selected_edges=choice==1 ? other_edges:edges;
+        size_t m=choice==1 ? sizeof(other_edges)/sizeof(other_edges[0]):sizeof(edges)/sizeof(edges[0]);
+        uint64_t expected=choice==1 ? other_distances[source][target]:distances[source][target];
+        uint32_t path[MAX_N], ordinary_path[MAX_N], repeat_path[MAX_N];
+        rr_result result,ordinary,repeat;
+        rr_status status,ordinary_status;
+        size_t capacity=(i/18)%5;
+        case_target=target;
+        fill_path(path,MAX_N);
+        fill_path(ordinary_path,MAX_N);
+        fill_path(repeat_path,MAX_N);
+        ordinary_status=search(selected,workspace,RR_ASTAR,source,target,h,
+                               ordinary_path,capacity,&ordinary);
+        status=search_plan(plans[choice],workspace,source,path,capacity,&result);
+        CHECK(status==ordinary_status);
+        compare_results(&result,&ordinary);
+        CHECK(result.heuristic_used==1 && result.algorithm==RR_ASTAR);
+        CHECK(result.query_allocations==0 && state.calls==calls);
+        CHECK(memcmp(path,ordinary_path,sizeof(path))==0);
+        CHECK(search_plan(plans[choice],second_workspace,source,repeat_path,capacity,&repeat)==status);
+        compare_results(&result,&repeat);
+        CHECK(memcmp(path,repeat_path,sizeof(path))==0);
+        CHECK(result.cost==expected);
+        if (status==RR_OK) check_path(6,m,selected_edges,source,target,path,&result,expected);
+        else {
+            CHECK(status==RR_NO_PATH || status==RR_BUFFER_TOO_SMALL);
+            check_untouched(path,MAX_N);
+            if (status==RR_NO_PATH) CHECK(result.path_length==0);
+            else CHECK(result.path_length>capacity);
+        }
+    }
+    {
+        rr_result result;
+        /* Includes zero-capacity NULL output and exact large finite costs. */
+        CHECK(search_plan(plans[0],workspace,0,NULL,0,&result)==RR_BUFFER_TOO_SMALL);
+        CHECK(result.cost==UINT64_C(2)*UINT32_MAX && result.path_length==3);
+        CHECK(search_plan(plans[0],workspace,3,NULL,0,&result)==RR_NO_PATH);
+        CHECK(result.expanded==2 && result.cost==RR_INFINITY);
+        CHECK(search_plan(plans[0],workspace,2,NULL,0,&result)==RR_BUFFER_TOO_SMALL);
+        CHECK(result.cost==0 && result.path_length==1);
+    }
+    CHECK(state.calls==calls && state.live==7);
+    for (i=0;i<3;++i) rr_heuristic_plan_destroy(plans[i]);
+    /* Destroying a plan must never release its borrowed graph. */
+    CHECK(state.live==4 && rr_graph_nodes(graph)==6 && rr_graph_nodes(other)==6);
+    rr_workspace_destroy(second_workspace);
+    rr_workspace_destroy(workspace);
+    rr_graph_destroy(other);
+    rr_graph_destroy(graph);
+    CHECK(state.live==0 && state.releases==7);
+}
+
 static void exercise_graph(uint32_t n, size_t m, const rr_edge *edges) {
     uint64_t distances[MAX_N][MAX_N], heuristic[MAX_N];
     rr_edge reordered[MAX_EDGES];
@@ -457,7 +653,14 @@ static void exercise_graph(uint32_t n, size_t m, const rr_edge *edges) {
     CHECK(rr_graph_bytes(graph)==rr_graph_bytes(permutation));
     state.fail_at=4;
     for (target=0;target<n;++target) {
+        rr_heuristic_plan *plan=NULL;
+        allocation_state plan_state={0};
+        rr_allocator plan_allocator={tracked_allocate,tracked_release,&plan_state};
         for (i=0;i<n;++i) heuristic[i]=distances[i][target];
+        CHECK(rr_heuristic_plan_create(graph,target,heuristic,&plan_allocator,&plan)==RR_OK);
+        CHECK(plan_state.calls==1 && plan_state.live==1);
+        CHECK(rr_heuristic_plan_bytes(plan)==plan_state.last_bytes);
+        plan_state.fail_at=2;
         for (source=0;source<n;++source) {
             unsigned mode;
             for (mode=0;mode<(unit ? 5u:4u);++mode) {
@@ -493,8 +696,22 @@ static void exercise_graph(uint32_t n, size_t m, const rr_edge *edges) {
                 CHECK(memcmp(path,replay,sizeof(path))==0);
                 CHECK(memcmp(path,shuffled,sizeof(path))==0);
                 CHECK(state.calls==3);
+                if (mode==3) {
+                    uint32_t planned[MAX_N];
+                    rr_result plan_result;
+                    fill_path(planned,MAX_N);
+                    CHECK(search_plan(plan,workspace,source,planned,MAX_N,&plan_result)==status);
+                    compare_results(&result,&plan_result);
+                    CHECK(memcmp(path,planned,sizeof(path))==0);
+                    if (status==RR_OK)
+                        check_path(n,m,edges,source,target,planned,&plan_result,distances[source][target]);
+                    else check_untouched(planned,MAX_N);
+                    CHECK(plan_state.calls==1 && state.calls==3);
+                }
             }
         }
+        rr_heuristic_plan_destroy(plan);
+        CHECK(plan_state.live==0 && plan_state.releases==1);
     }
     if (!unit) {
         uint32_t path[MAX_N];
@@ -576,6 +793,8 @@ int main(void) {
     test_capacity_and_copy();
     test_allocators_and_bounds();
     test_heuristics();
+    test_plan_validation();
+    test_plan_ownership_binding_and_reuse();
     test_fixed_graphs();
     test_random_graphs();
     printf("ROADRUNNER conformance: 400 fixed-seed random graphs, "

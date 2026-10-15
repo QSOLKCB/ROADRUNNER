@@ -19,6 +19,7 @@ typedef void (*rr_free_fn)(void *context, void *pointer);
 typedef struct { rr_alloc_fn allocate; rr_free_fn release; void *context; } rr_allocator;
 typedef struct rr_graph rr_graph;
 typedef struct rr_workspace rr_workspace;
+typedef struct rr_heuristic_plan rr_heuristic_plan;
 typedef struct {
     uint64_t cost, expanded, relaxed, pushes;
     size_t path_length, workspace_bytes;
@@ -51,6 +52,25 @@ rr_status rr_search(const rr_graph *graph, rr_workspace *workspace,
                     rr_algorithm algorithm, uint32_t source, uint32_t target,
                     const uint64_t *h, uint32_t *path, size_t capacity,
                     rr_result *result);
+/* Certified plan copies n heuristic values and validates the private copy once.
+   It binds one immutable graph and target; invalid bounds return RR_INVALID
+   (unlike rr_search's zero fallback). Constructor clears *out on failure.
+   The graph is borrowed: it must outlive the plan and all its queries.
+   Allocator callbacks/context must outlive the plan. Destroy only after queries
+   finish, and before graph destruction. Plans can be shared with distinct
+   workspaces; the input h may be changed or freed after successful creation.
+   One checked allocation holds the plan and copy; bytes returns requested size
+   (zero for NULL). No query allocation or public certificate bypass flag. */
+rr_status rr_heuristic_plan_create(const rr_graph *graph, uint32_t target,
+                                  const uint64_t *h, const rr_allocator *allocator,
+                                  rr_heuristic_plan **out);
+void rr_heuristic_plan_destroy(rr_heuristic_plan *plan);
+size_t rr_heuristic_plan_bytes(const rr_heuristic_plan *plan);
+/* Same path, result, error and workspace contracts as rr_search with RR_ASTAR.
+   Skips only the certificate scan; preserves exact cost and deterministic ties. */
+rr_status rr_search_plan(const rr_heuristic_plan *plan, rr_workspace *workspace,
+                         uint32_t source, uint32_t *path, size_t capacity,
+                         rr_result *result);
 const char *rr_status_string(rr_status status);
 #ifdef __cplusplus
 }

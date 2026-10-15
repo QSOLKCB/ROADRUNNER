@@ -12,6 +12,23 @@ The opaque workspace owns one reusable allocation, 32 bytes per node plus its he
 
 AUTO selects FIFO BFS only when every edge has cost one; otherwise indexed binary-heap Dijkstra. Explicit BFS rejects any other cost model. A* validates a provided nonnegative uint64 heuristic for the target on every call: h(target)=0 and h(u)<=cost(u,v)+h(v) for each arc. The check uses safe subtraction. Telescoping along a route proves admissibility; disconnected nodes may carry large heuristic values. Invalid or absent bounds are reported as zero fallback, preserving exact optimality. Heuristic generation and certification costs must be included in comparisons.
 
+`rr_heuristic_plan_create` offers an opt-in repeated-target path. It copies all
+bounds into one checked allocation, certifies that private copy and binds the
+immutable graph and target. Invalid bounds are rejected rather than converted
+to a zero-fallback plan. `rr_search_plan` invokes the same A* kernel and skips
+only the already-proved certificate scan; it preserves tie rules, counters,
+path/capacity semantics, epoch reset and zero query allocations. The ordinary
+`rr_search` path still validates on every call. No public trust flag exists.
+
+The graph is borrowed and must outlive its plans and all queries. Destroy plans
+after active queries finish and before destroying the graph. Plan allocator
+callbacks/context must remain alive until destruction. Plans are immutable and
+shareable with separate exclusive workspaces. The caller may mutate or release
+the input bounds after successful construction. Peak construction memory
+includes both input and copied bounds; `rr_heuristic_plan_bytes` reports the
+single requested allocation, not allocator overhead. A plan is not a cached
+route and does not change the search ordering or heuristic quality.
+
 Heap order is `(f, g, physical node id)`. Adjacency is sorted and parents change only on strict distance improvement; zero-weight cycles cannot rewrite equal-distance parents. BFS visits deterministic sorted neighbors and finishes on first goal discovery, whose hop cost is already optimal. Expanded counts popped nodes, so that fast path does not count the unpopped goal; pushes counts actual queue/heap insertions. Repeated identical input/strategy gives identical paths. Different strategies or physical permutations may return different equally optimal paths. Changing heap tie rules requires compatibility review.
 
 A uint64 sentinel denotes infinity. With at most UINT32_MAX-1 nodes and uint32 nonnegative costs, a finite simple optimal path is strictly below UINT64_MAX. All relaxation additions are still checked. A* f addition saturates to UINT64_MAX; consistency ensures a node that can reach the goal has a bounded admissible priority. All authoritative g totals remain exact. There are no negative/float edge costs.
