@@ -1,9 +1,10 @@
+HEX_SOURCE_ID = $(shell python3 benchmarks/hex_source.py)
 CC = cc
 CFLAGS = -O3 -DNDEBUG -std=c17 -Wall -Wextra -Wpedantic -Werror
 CPPFLAGS = -Iinclude
 BUILD ?= build
 .PHONY: all test clean
-all: $(BUILD)/rr $(BUILD)/rr_tests $(BUILD)/rr_tests_wrap $(BUILD)/rr_bench $(BUILD)/rr_bench_zero_clock $(BUILD)/rr_plan_bench $(BUILD)/rr_plan_bench_frozen
+all: $(BUILD)/rr_hex_bench $(BUILD)/rr_hex_bench_frozen $(BUILD)/rr $(BUILD)/rr_tests $(BUILD)/rr_tests_wrap $(BUILD)/rr_bench $(BUILD)/rr_bench_zero_clock $(BUILD)/rr_plan_bench $(BUILD)/rr_plan_bench_frozen
 $(BUILD):
 	mkdir -p $@
 $(BUILD)/rr: src/cli.c src/roadrunner.c include/roadrunner.h | $(BUILD)
@@ -20,7 +21,12 @@ $(BUILD)/rr_plan_bench: benchmarks/plan_bench.c src/roadrunner.c include/roadrun
 	$(CC) $(CPPFLAGS) $(CFLAGS) benchmarks/plan_bench.c src/roadrunner.c $(LDFLAGS) -o $@
 $(BUILD)/rr_plan_bench_frozen: benchmarks/plan_bench.c src/roadrunner.c include/roadrunner.h | $(BUILD)
 	$(CC) $(CPPFLAGS) $(CFLAGS) -DRR_PLAN_FROZEN_CLOCK benchmarks/plan_bench.c src/roadrunner.c $(LDFLAGS) -o $@
+$(BUILD)/rr_hex_bench: benchmarks/hex_bench.c benchmarks/hex_source.py src/roadrunner.c include/roadrunner.h | $(BUILD)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -DRR_HEX_SOURCE_ID=\"$(HEX_SOURCE_ID)\" benchmarks/hex_bench.c src/roadrunner.c $(LDFLAGS) -o $@
+$(BUILD)/rr_hex_bench_frozen: benchmarks/hex_bench.c benchmarks/hex_source.py src/roadrunner.c include/roadrunner.h | $(BUILD)
+	$(CC) $(CPPFLAGS) $(CFLAGS) -DRR_HEX_SOURCE_ID=\"$(HEX_SOURCE_ID)\" -DRR_HEX_FROZEN_CLOCK benchmarks/hex_bench.c src/roadrunner.c $(LDFLAGS) -o $@
 test: all
+	python3 tests/test_hex_bench.py $(BUILD)/rr_hex_bench $(BUILD)/rr_hex_bench_frozen
 	$(BUILD)/rr_tests
 	python3 tests/test_plan_bench.py $(BUILD)/rr_plan_bench $(BUILD)/rr_plan_bench_frozen
 	$(BUILD)/rr_tests_wrap
