@@ -49,6 +49,7 @@ jobs:
         run: |
           python3 benchmarks/run.py --binary build/rr_bench --output build-evidence/benchmark.json --side 64 --queries 101 --repeats 1 --compiler ${{ matrix.cc }} --flags=@build/compile_commands.json
           python3 benchmarks/plan_run.py --binary build/rr_plan_bench --output build-evidence/heuristic-plans.json --repeats 2 --compiler ${{ matrix.cc }} --flags=@build/compile_commands.json
+          python3 benchmarks/hex_run.py --binary build/rr_hex_bench --output build-evidence/hex-fixture.json --compile-commands build/compile_commands.json
           cp build/compile_commands.json build-evidence/
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         if: always()

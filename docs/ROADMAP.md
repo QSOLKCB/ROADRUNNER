@@ -7,3 +7,8 @@
 Not in this mission: mandatory H4/E8, GPU/runtime frameworks, dynamic graph service, TRIALITY/TRINITY integration or release engineering. The initial mission prohibited merges; later explicit user authorization permits gated merges after exact-head Codex No issues and passing applicable validation. Continue only with scoped, evidence-supported PRs.
 
 Current scoped implementation: reusable copied heuristic plans for repeated targets, sharing the existing A* kernel. See HEURISTIC_PLANS.md for lifecycle measurements and limits. Synthetic held-out grids do not complete the application-corpus/Ryzen work above. No additional search-order hypothesis is included.
+
+Current follow-up: [synthetic hex-grid fixture](HEX_FIXTURE.md), comparing ordinary
+exact A* and BFS on identical equal-cost six-neighbor graphs with independent
+oracle checks and source/kernel receipts. This does not complete the application
+corpus, Ryzen characterization or concurrency research.
